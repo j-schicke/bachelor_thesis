@@ -5,9 +5,11 @@ Meetings:
 
 progress:
 
-reading Multirotor Aerial Vehicle and Minimum Snap  <br /> 
-reading Trajectory Generation and Control for Quadrotors  <br /> 
+read Multirotor Aerial Vehicle and Minimum Snap  <br /> 
+read Trajectory Generation and Control for Quadrotors  <br /> 
+read Dynamics Modelling and Linear Control of Quadcopter <br />
 beginng implementing basic forward propagation <br /> 
+
 
 next weeks plan:
 
