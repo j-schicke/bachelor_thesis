@@ -11,7 +11,7 @@ read Dynamics Modelling and Linear Control of Quadcopter <br />
 beginng implementing basic forward propagation <br /> 
 
 
-next weeks plan:
+next week plans:
 
 check out the data <br /> 
 implementing basic forward propagation <br /> 
@@ -19,4 +19,20 @@ implementing basic forward propagation <br />
 discussion:
 
 What is the output data of the forward propagation
+
+
+progress:
+read [2] <br /> 
+decode and plot the data <br /> 
+implemting basic forward propagation <br /> 
+
+
+next week plans:
+use the forward propagation model with data <br /> 
+calculate model error <br /> 
+
+
+discussion:
+
+
 
