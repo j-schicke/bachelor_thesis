@@ -62,7 +62,7 @@ def newton(m, u, z_w, z_b):
     return m_r
 
 def euler(u, wbw, I):
-    wbw_2 = np.linalg.inv(I)*(np.cross(-wbw,I)*wbw+np.array([u[1], u[2], u[3]]))
+    wbw_2 = np.linalg.inv(I)@(np.cross(-wbw,I)@wbw+np.array([u[1], u[2], u[3]]))
     return wbw_2
 
 if __name__ == '__main__':
