@@ -81,8 +81,8 @@ if __name__ == '__main__':
         x_w = np.array([1,0,0])
         y_w = np.array([0,1,0])
         z_w = np.array([0,0,1])
-        p, q, r = euler_from_quaternion(data['stateEstimate.qx'][i], data['stateEstimate.qy'][i], data['stateEstimate.qz'][i], data['stateEstimate.qw'][i])
-        R = np.array([[math.cos(r)*math.cos(q)-math.sin(p)*math.sin(r)*math.sin(q),-math.cos(p)*math.sin(r),math.cos(r)*math.sin(q)+math.cos(q)*math.sin(p)*math.sin(r)],[math.cos(q)*math.sin(r)+math.cos(r)*math.sin(p)*math.sin(q), math.sin(p)*math.cos(r), math.cos(q)*math.sin(r)-math.cos(r)*math.cos(q)*math.sin(p)],[-math.cos(p)*math.sin(q),math.sin(p), math.cos(p)*math.cos(q)]])
+        r, p, y = euler_from_quaternion(data['stateEstimate.qx'][i], data['stateEstimate.qy'][i], data['stateEstimate.qz'][i], data['stateEstimate.qw'][i])
+        R = np.array([[math.cos(y)*math.cos(p)-math.sin(r)*math.sin(y)*math.sin(p),-math.cos(r)*math.sin(y),math.cos(y)*math.sin(p)+math.cos(p)*math.sin(r)*math.sin(y)],[math.cos(p)*math.sin(y)+math.cos(y)*math.sin(r)*math.sin(p), math.sin(r)*math.cos(y), math.cos(p)*math.sin(y)-math.cos(y)*math.cos(p)*math.sin(r)],[-math.cos(r)*math.sin(p),math.sin(r), math.cos(r)*math.cos(p)]])
         
         x_b= np.asarray(R@x_w)
         y_b= np.asarray(R@y_w)
