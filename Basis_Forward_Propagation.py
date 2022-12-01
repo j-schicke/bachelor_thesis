@@ -82,13 +82,12 @@ if __name__ == '__main__':
         y_w = np.array([0,1,0])
         z_w = np.array([0,0,1])
         p, q, r = euler_from_quaternion(data['stateEstimate.qx'][i], data['stateEstimate.qy'][i], data['stateEstimate.qz'][i], data['stateEstimate.qw'][i])
-        R = np.array([[math.cos(r)*math.cos(q)-math.sin(p)*math.sin(r)*math.sin(q),-math.cos(p)*math.sin(r), math.cos(r)*math.sin(q)+math.cos(q)*math.sin(p)*math.sin(r)],[math.cos(q)*math.sin(r)+math.cos(r)*math.sin(p)*math.sin(q), math.sin(p)*math.cos(r), math.cos(q)*math.sin(r)-math.cos(r)*math.cos(q)*math.sin(p)],[-math.cos(p)*math.sin(q), math.sin(p), math.cos(p), math.cos(q)]])
+        R = np.array([[math.cos(r)*math.cos(q)-math.sin(p)*math.sin(r)*math.sin(q),-math.cos(p)*math.sin(r),math.cos(r)*math.sin(q)+math.cos(q)*math.sin(p)*math.sin(r)],[math.cos(q)*math.sin(r)+math.cos(r)*math.sin(p)*math.sin(q), math.sin(p)*math.cos(r), math.cos(q)*math.sin(r)-math.cos(r)*math.cos(q)*math.sin(p)],[-math.cos(p)*math.sin(q),math.sin(p), math.cos(p)*math.cos(q)]])
         
         x_b= np.asarray(R@x_w)
         y_b= np.asarray(R@y_w)
         z_b= np.asarray(R@z_w)
 
-        a = ((R@z_w))
         w = np.array([data['rpm.m1'][i], data['rpm.m2'][i], data['rpm.m3'][i], data['rpm.m4'][i]])
         u = newton_euler(w, ct, cq, d)
         #wbw = p*data['stateEstimate.x'][i] +q*data['stateEstimate.y'][i]+r*data['stateEstimate.z'][i]
