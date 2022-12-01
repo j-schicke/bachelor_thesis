@@ -90,7 +90,7 @@ if __name__ == '__main__':
 
         w = np.array([data['rpm.m1'][i], data['rpm.m2'][i], data['rpm.m3'][i], data['rpm.m4'][i]])
         u = newton_euler(w, ct, cq, d)
-        wbw = np.array([data['gyro.x'], data['gyro.y'], data['gyro.z']])
+        wbw = np.array([data['gyro.x'][i], data['gyro.y'][i], data['gyro.z'][i]])
         acc_a = euler(u, wbw, I)
         #acc_cm = newton(m, u, z_w, data['stateEstimate.z'][i])
         acc_cm = newton(m,u, z_w, z_b)
