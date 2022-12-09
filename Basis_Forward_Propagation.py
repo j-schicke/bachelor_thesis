@@ -8,6 +8,8 @@ import functools
 import math
 from config.multirotor_config import MultirotorConfig
 import rowan
+from mpl_toolkits.mplot3d import Axes3D
+
 
 def newton_euler(w, ct, cq, d):
     T = np.array([[ct, ct, ct, ct], [0, d*ct, 0, -d*ct], [-d*ct, 0, d*ct, 0], [cq, -cq, cq, -cq]])
@@ -107,3 +109,19 @@ if __name__ == '__main__':
     
         R = rowan.to_matrix([data['stateEstimate.qx'][i], data['stateEstimate.qy'][i], data['stateEstimate.qz'][i], data['stateEstimate.qw'][i]])
 
+    pos = np.asarray(pos)
+
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+    zline = pos[:,0]
+    xline = pos[:,1]
+    yline = pos[:,2]
+    ax.plot3D(xline, yline, zline, 'gray')
+    t = (data['timestamp'] - start_time) / 1000
+
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+
+    plt.show()
+        
