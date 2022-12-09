@@ -78,8 +78,9 @@ if __name__ == '__main__':
 
     vel_a.append(np.array([data['gyro.x'][0], data['gyro.y'][0], data['gyro.z'][0]]))
     pos_a.append(np.array([0,0,0]))
-    vel.append(np.array([0,0,0]))
-    pos.append(np.array([0,0,0]))
+    vel.append(np.array([data['stateEstimate.vx'][0], data['stateEstimate.vy'][0], data['stateEstimate.vz'][0]]))
+    pos.append(np.array([data['stateEstimate.x'][0], data['stateEstimate.y'][0], data['stateEstimate.z'][0]]))
+
 
     for i in range(len(data['timestamp'])):
         z_b= np.asarray(R@z_w) 
