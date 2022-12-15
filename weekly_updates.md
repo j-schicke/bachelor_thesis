@@ -35,7 +35,7 @@ next week plans:
 use the forward propagation model with data <br /> 
 calculate model error <br /> 
 
-09.12-14.12:
+09.12-15.12:
 
 progress:
 
@@ -51,4 +51,13 @@ discussion:
 the output of the model is very different to the original data (accelerati9on original between 0-1 and output -3000 <br /> 
 
 
+16.12-21.12:
+
+progress;
+plot the conparison of the data and model and the error of the model <br  />
+calculate f_a and tau_a of the residual model
+
+discussion:
+
+the error of the model is really high (both angular and linear) -> error in the code of newton euler equation
 

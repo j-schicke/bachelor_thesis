@@ -34,7 +34,7 @@ def position(vel, pos, time, prev_time):
     return y
 
 def angular_acc(u, wbw, I):
-    wbw_2 = np.linalg.pinv(I)@(np.cross(-wbw,I)@wbw+np.array([u[1], u[2], u[3]]).T)
+    wbw_2 = np.linalg.pinv(I)@(np.cross(-wbw,I)@wbw+np.array([u[1], u[2], u[3]]))
     return wbw_2
 
 def angular_velocity(acc_a, vel_a, time, prev_time):
@@ -118,3 +118,4 @@ if __name__ == '__main__':
 
     compare_data(data, quaternions, acc, vel, vel_a)
     errors(data, acc, vel, vel_a, quaternions, pos)
+
