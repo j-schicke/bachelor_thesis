@@ -9,6 +9,7 @@ import math
 from config.multirotor_config import MultirotorConfig
 import rowan
 from mpl_toolkits.mplot3d import Axes3D
+from plot_data import compare_velocity,compare_acceleration,compare_gyro,compare_quaternions
 
 
 def newton_euler(w, ct, cq, d):
@@ -18,7 +19,7 @@ def newton_euler(w, ct, cq, d):
 
 def acceleration(m, u, z_w, z_b):
     g = 9.81
-    acc = (-m*g*z_w+u[0]*z_b)/m 
+    acc = (-m*g*z_w+u[0]*z_b)/m
     return acc
 
 
@@ -62,7 +63,7 @@ if __name__ == '__main__':
     m = MultirotorConfig.MASS
     acc = []
     z_w = np.array([0,0,1])
-    prev_time = 0
+    prev_time = data['timestamp'][0]
     vel_a = []
     acc_a = []
     pos = []
@@ -101,29 +102,19 @@ if __name__ == '__main__':
         quaternions.append(quat)
 
         prev_time = time
-    quaternions.pop(len(data['timestamp']))
+
+    acc = np.array(acc)
+
+    vel.pop(0)
+    vel = np.array(vel)
+
+    vel_a.pop(0)
+    vel_a = np.array(vel_a)
+
+    quaternions.pop(0)
     quaternions = np.array(quaternions)
-    
 
-    fig, ax = plt.subplots(2)
-    ax[0].plot(data['timestamp'], data['stateEstimate.qw'], '-', label='w')
-    ax[0].plot(data['timestamp'], data['stateEstimate.qx'], '-', label='x')
-    ax[0].plot(data['timestamp'], data['stateEstimate.qy'], '-', label='y')
-    ax[0].plot(data['timestamp'], data['stateEstimate.qz'], '-', label='z')
-
-    ax[0].set_xlabel('timestamp [ms]')
-    ax[0].set_ylabel('quaternions')
-    ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
-
-    ax[1].plot(data['timestamp'], quaternions[:,0], '-', label='w')
-    ax[1].plot(data['timestamp'], quaternions[:,1], '-', label='x')
-#   ax[1].plot(data['timestamp'], quaternions[:,2], '-', label='y')
-#   ax[1].plot(data['timestamp'], quaternions[:,3], '-', label='z')
-
-    ax[1].set_xlabel('timestamp [ms]')
-    ax[1].set_ylabel('new_quaternions')
-#   ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
-    plt.show()
-
-    print(quaternions[2])
-    print(np.array([data['stateEstimate.qw'][2],data['stateEstimate.qx'][2], data['stateEstimate.qy'][2], data['stateEstimate.qz'][2]]))
+    compare_quaternions(data, quaternions)
+    compare_acceleration(data,acc)
+    compare_velocity(data, vel)
+    compare_gyro(data,vel_a)

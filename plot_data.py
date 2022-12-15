@@ -29,16 +29,28 @@ def plot_all(data):
 
     plt.show()
 
-def gyro(data):
-    fig, ax = plt.subplots()
-    plt.plot(data['timestamp'], data['gyro.x'], '-', label='X')
-    plt.plot(data['timestamp'], data['gyro.y'], '-', label='Y')
-    plt.plot(data['timestamp'], data['gyro.z'], '-', label='Z')
-    plt.xlabel('timestamp [ms]')
-    plt.ylabel('Gyroscope [°/s]')
-    plt.legend(loc=9, ncol=3, borderaxespad=0.)
+def compare_gyro(data, vel_a):
 
-    plt.show()
+    fig,ax = plt.subplots(2)
+
+    ax[0].plot(data['timestamp'], data['gyro.x'], '-', label='X')
+    ax[0].plot(data['timestamp'], data['gyro.y'], '-', label='Y')
+    ax[0].plot(data['timestamp'], data['gyro.z'], '-', label='Z')
+    ax[0].set_xlabel('timestamp [ms]')
+    ax[0].set_ylabel('Gyroscope [°/s]')
+    ax[0].set_title('data angular_velocity')
+    ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    ax[1].plot(data['timestamp'], vel_a[:,0], '-', label='X')
+    ax[1].plot(data['timestamp'], vel_a[:,1], '-', label='Y')
+    ax[1].plot(data['timestamp'], vel_a[:,2], '-', label='Z')
+    ax[1].set_xlabel('timestamp [ms]')
+    ax[1].set_ylabel('Gyroscope [°/s]')
+    ax[1].set_title('output angular_velocity')
+    ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    plt.savefig('pdf/angular_velocity.pdf')  
+
 
 def trajectory(data):
     fig = plt.figure()
@@ -55,16 +67,28 @@ def trajectory(data):
 
     plt.show()
 
-def velocity(data):
-    fig, ax = plt.subplots()
-    plt.plot(data['timestamp'], data['stateEstimate.vx'], '-', label='X')
-    plt.plot(data['timestamp'], data['stateEstimate.vy'], '-', label='Y')
-    plt.plot(data['timestamp'], data['stateEstimate.vz'], '-', label='Z')
-    plt.xlabel('timestamp [ms]')
-    plt.ylabel('Velocity [m/s]')
-    plt.legend(loc=9, ncol=3, borderaxespad=0.)
+def compare_velocity(data, vel):
 
-    plt.show()
+    fig,ax = plt.subplots(2)
+
+    ax[0].plot(data['timestamp'], data['stateEstimate.vx'], '-', label='X')
+    ax[0].plot(data['timestamp'], data['stateEstimate.vy'], '-', label='Y')
+    ax[0].plot(data['timestamp'], data['stateEstimate.vz'], '-', label='Z')
+    ax[0].set_xlabel('timestamp [ms]')
+    ax[0].set_ylabel('velocity [m/s]')
+    ax[0].set_title('data velocity')
+    ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    ax[1].plot(data['timestamp'], vel[:,0], '-', label='X')
+    ax[1].plot(data['timestamp'], vel[:,1], '-', label='Y')
+    ax[1].plot(data['timestamp'], vel[:,2], '-', label='Z')
+    ax[1].set_xlabel('timestamp [ms]')
+    ax[1].set_ylabel('velocity [m/s]')
+    ax[1].set_title('output velocity')
+    ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    plt.savefig('pdf/velocity.pdf')  
+
 
 def rpm(data):
     fig, ax = plt.subplots()
@@ -79,30 +103,52 @@ def rpm(data):
 
     plt.show()
 
-def quaternions(data):
-    fig, ax = plt.subplots()
-    plt.plot(data['timestamp'], data['stateEstimate.qx'], '-', label='x')
-    plt.plot(data['timestamp'], data['stateEstimate.qy'], '-', label='y')
-    plt.plot(data['timestamp'], data['stateEstimate.qz'], '-', label='z')
-    plt.plot(data['timestamp'], data['stateEstimate.qw'], '-', label='w')
+def compare_quaternions(data, quaternions):
 
-    plt.xlabel('timestamp [ms]')
-    plt.ylabel('quaternions')
-    plt.legend(loc=9, ncol=3, borderaxespad=0.)
+    fig, ax = plt.subplots(2)
 
-    plt.show()
+    ax[0].plot(data['timestamp'], data['stateEstimate.qw'], '-', label='W')
+    ax[0].plot(data['timestamp'], data['stateEstimate.qx'], '-', label='X')
+    ax[0].plot(data['timestamp'], data['stateEstimate.qy'], '-', label='Y')
+    ax[0].plot(data['timestamp'], data['stateEstimate.qz'], '-', label='Z')
+    ax[0].set_xlabel('timestamp [ms]')
+    ax[0].set_ylabel('quaternions')
+    ax[0].set_title('data quaternions')
+    ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
 
-def acceleration(data):
+    ax[1].plot(data['timestamp'], quaternions[:,0], '-', label='W')
+    ax[1].plot(data['timestamp'], quaternions[:,1], '-', label='X')
+    ax[1].plot(data['timestamp'], quaternions[:,2], '-', label='Y')
+    ax[1].plot(data['timestamp'], quaternions[:,3], '-', label='Z')
+    ax[1].set_xlabel('timestamp [ms]')
+    ax[1].set_ylabel('quaternions')
+    ax[1].set_title('output quaternions')
+    ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
 
-    fig, ax = plt.subplots()
-    plt.plot(data['timestamp'], data['acc.x'], '-', label='X')
-    plt.plot(data['timestamp'], data['acc.y'], '-', label='Y')
-    plt.plot(data['timestamp'], data['acc.z'], '-', label='Z')
-    plt.xlabel('timestamp [ms]')
-    plt.ylabel('acceleration [m/s²]')
-    plt.legend(loc=9, ncol=3, borderaxespad=0.)
+    plt.savefig('pdf/quaternions.pdf')  
 
-    plt.show()
+
+
+def compare_acceleration(data, acc):
+
+    fig,ax = plt.subplots(2)
+    ax[0].plot(data['timestamp'], data['acc.x'], '-', label='X')
+    ax[0].plot(data['timestamp'], data['acc.y'], '-', label='Y')
+    ax[0].plot(data['timestamp'], data['acc.z'], '-', label='Z')
+    ax[0].set_xlabel('timestamp [ms]')
+    ax[0].set_ylabel('acceleration [m/s²]')
+    ax[0].set_title('data acceleration')
+    ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    ax[1].plot(data['timestamp'], acc[:,0], '-', label='X')
+    ax[1].plot(data['timestamp'], acc[:,1], '-', label='Y')
+    ax[1].plot(data['timestamp'], acc[:,2], '-', label='Z')
+    ax[1].set_xlabel('timestamp [ms]')
+    ax[1].set_ylabel('acceleration [m/s²]')
+    ax[1].set_title('output acceleration')
+    ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    plt.savefig('pdf/acceleration.pdf')  
 
 
 
@@ -127,4 +173,13 @@ if __name__ == "__main__":
     del data['pwm.m4_pwm']
     del data['pm.vbatMV']
 
-    acceleration(data)
+
+
+
+
+
+
+
+
+
+    plt.show()
