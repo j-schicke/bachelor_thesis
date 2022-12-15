@@ -9,7 +9,7 @@ import math
 from config.multirotor_config import MultirotorConfig
 import rowan
 from mpl_toolkits.mplot3d import Axes3D
-from plot_data import compare_velocity,compare_acceleration,compare_gyro,compare_quaternions
+from plot_data import compare_data, errors
 
 
 def newton_euler(w, ct, cq, d):
@@ -114,7 +114,8 @@ if __name__ == '__main__':
     quaternions.pop(0)
     quaternions = np.array(quaternions)
 
-    compare_quaternions(data, quaternions)
-    compare_acceleration(data,acc)
-    compare_velocity(data, vel)
-    compare_gyro(data,vel_a)
+    pos.pop(0)
+    pos = np.array(pos)
+
+    compare_data(data, quaternions, acc, vel, vel_a)
+    errors(data, acc, vel, vel_a, quaternions, pos)
