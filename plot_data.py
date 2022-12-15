@@ -65,7 +65,7 @@ def trajectory(data):
     ax.set_ylabel('y')
     ax.set_zlabel('z')
 
-    plt.show()
+    fig.show()
 
 def compare_velocity(data, vel):
 

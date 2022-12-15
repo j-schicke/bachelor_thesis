@@ -9,7 +9,7 @@ import math
 from config.multirotor_config import MultirotorConfig
 import rowan
 from mpl_toolkits.mplot3d import Axes3D
-from plot_data import compare_data, errors
+from plot_data import compare_data, errors, rpm
 
 
 def newton_euler(w, ct, cq, d):
@@ -34,7 +34,7 @@ def position(vel, pos, time, prev_time):
     return y
 
 def angular_acc(u, wbw, I):
-    wbw_2 = np.linalg.pinv(I)@(np.cross(-wbw,I)@wbw+np.array([u[1], u[2], u[3]]))
+    wbw_2 = np.linalg.pinv(I)@(np.cross(-wbw,I)@wbw+np.array([u[1], u[2], u[3]]).T)
     return wbw_2
 
 def angular_velocity(acc_a, vel_a, time, prev_time):
@@ -54,7 +54,6 @@ if __name__ == '__main__':
     #data_usd = cfusdlog.decode(args.file_usd)
     data_usd = cfusdlog.decode("log01")
     data = data_usd['fixedFrequency']
-    start_time = data['timestamp'][0]
 
     I = MultirotorConfig.INERTIA
     ct =MultirotorConfig.THRUST_C
