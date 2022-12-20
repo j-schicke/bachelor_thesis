@@ -253,8 +253,3 @@ if __name__ == "__main__":
     data = data_usd['fixedFrequency']
     start_time = data['timestamp'][0]
     # new figure
-    del data['pwm.m1_pwm']
-    del data['pwm.m2_pwm']
-    del data['pwm.m3_pwm']
-    del data['pwm.m4_pwm']
-    del data['pm.vbatMV']

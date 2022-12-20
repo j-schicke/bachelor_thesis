@@ -12,10 +12,28 @@ from mpl_toolkits.mplot3d import Axes3D
 from plot_data import compare_data, errors, rpm
 
 
-def newton_euler(w, ct, cq, d):
-    T = np.array([[ct, ct, ct, ct], [0, d*ct, 0, -d*ct], [-d*ct, 0, d*ct, 0], [cq, -cq, cq, -cq]])
-    u = T @ w**2
-    return u
+#def newton_euler(w, ct, cq, d):
+#    T = np.array([[ct, ct, ct, ct], [0, d*ct, 0, -d*ct], [-d*ct, 0, d*ct, 0], [cq, -cq, cq, -cq]])
+#    u = T @ w**2
+#    return u
+def thrust_torque(pwm_1, pwm_2, pwm_3, pwm_4, mv):
+    f_1 = 11.09-39.08*pwm_1-9.53*mv +20.57*pwm_1**2 + 38.43*pwm_1*mv
+    f_2 = 11.09-39.08*pwm_2-9.53*mv +20.57*pwm_2**2 + 38.43*pwm_2*mv
+    f_3 = 11.09-39.08*pwm_3-9.53*mv +20.57*pwm_3**2 + 38.43*pwm_3*mv
+    f_4 = 11.09-39.08*pwm_4-9.53*mv +20.57*pwm_4**2 + 38.43*pwm_4*mv
+    arm_length = 0.046 # m
+    arm = 0.707106781 * arm_length
+    t2t = 0.006 # thrust-to-torque ratio
+    B0 = np.array([
+			[1, 1, 1, 1],
+			[-arm, -arm, arm, arm],
+			[-arm, arm, arm, -arm],
+			[-t2t, t2t, -t2t, t2t]
+			])
+
+    u = B0 @ np.array([f_1, f_2, f_3, f_4])
+    return u 
+
 
 def acceleration(m, u, z_w, z_b):
     g = 9.81
@@ -78,8 +96,9 @@ if __name__ == '__main__':
     for i in range(len(data['timestamp'])):
         R = rowan.to_matrix(quaternions[i])
         z_b= np.asarray(R@z_w) 
-        w = np.array([data['rpm.m1'][i], data['rpm.m2'][i], data['rpm.m3'][i], data['rpm.m4'][i]]) 
-        u = newton_euler(w, ct, cq, d)
+        #w = np.array([data['rpm.m1'][i], data['rpm.m2'][i], data['rpm.m3'][i], data['rpm.m4'][i]]) 
+        u = thrust_torque(data['pwm.m1_pwm'][i], data['pwm.m2_pwm'][i], data['pwm.m3_pwm'][i], data['pwm.m4_pwm'][i], data['pm.vbatMV'][i])
+
         time = data['timestamp'][i]
 
         ang_a = angular_acc(u, vel_a[i], I)
