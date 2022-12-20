@@ -8,6 +8,8 @@ import functools
 import math
 from config.multirotor_config import MultirotorConfig
 import rowan
+from sklearn import preprocessing
+
 
 def thrust_torque(pwm_1, pwm_2, pwm_3, pwm_4, mv):
     f_1 = 11.09-39.08*pwm_1-9.53*mv +20.57*pwm_1**2 + 38.43*pwm_1*mv
@@ -56,6 +58,13 @@ if __name__ == '__main__':
     f = []
     tau = []
     prev_time = start_time
+    
+    pwm_1 = preprocessing.normalize(data['pwm.m1_pwm'][None])[0]
+    pwm_2 = preprocessing.normalize(data['pwm.m2_pwm'][None])[0]
+    pwm_3 = preprocessing.normalize(data['pwm.m3_pwm'][None])[0]
+    pwm_4 =preprocessing.normalize(data['pwm.m4_pwm'][None])[0]
+    mv = preprocessing.normalize(data['pm.vbatMV'][None])[0]
+
 
     for i in range(1, len(data['timestamp'])):
         time = data['timestamp'][i]
@@ -63,7 +72,7 @@ if __name__ == '__main__':
         vel = np.array([data['stateEstimate.vx'][i], data['stateEstimate.vy'][i], data['stateEstimate.vz'][i]])
 
         R = rowan.to_matrix(np.array([data['stateEstimate.qw'][i],data['stateEstimate.qx'][i], data['stateEstimate.qy'][i], data['stateEstimate.qz'][i]]))
-        u = thrust_torque(data['pwm.m1_pwm'][i], data['pwm.m2_pwm'][i], data['pwm.m3_pwm'][i], data['pwm.m4_pwm'][i], data['pm.vbatMV'][i])
+        u = thrust_torque(pwm_1[i], pwm_2[i], pwm_3[i], pwm_4[i], mv[i])
         a_acc = angular_acceleration(a_vel, prev_time, time)
         f_u = np.array([0,0, u[0]])
         f_a = disturbance_forces(m, vel, R, f_u)
@@ -88,11 +97,9 @@ if __name__ == '__main__':
     ax[1].plot(data['timestamp'][1:], tau[:,1], '-', label='Y')
     ax[1].plot(data['timestamp'][1:], tau[:,2], '-', label='Z')
     ax[1].set_xlabel('timestamp [ms]')
-    ax[1].set_ylabel('tau_a')
-    ax[1].set_title('tau_a')
+    ax[1].set_ylabel('f_a')
+    ax[1].set_title('f_a')
     ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
-
     plt.show()
-
 
 

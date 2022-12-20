@@ -9,7 +9,9 @@ import math
 from config.multirotor_config import MultirotorConfig
 import rowan
 from mpl_toolkits.mplot3d import Axes3D
-from plot_data import compare_data, errors, rpm
+from plot_data import compare_data, errors
+from sklearn import preprocessing
+
 
 
 #def newton_euler(w, ct, cq, d):
@@ -17,6 +19,8 @@ from plot_data import compare_data, errors, rpm
 #    u = T @ w**2
 #    return u
 def thrust_torque(pwm_1, pwm_2, pwm_3, pwm_4, mv):
+
+
     f_1 = 11.09-39.08*pwm_1-9.53*mv +20.57*pwm_1**2 + 38.43*pwm_1*mv
     f_2 = 11.09-39.08*pwm_2-9.53*mv +20.57*pwm_2**2 + 38.43*pwm_2*mv
     f_3 = 11.09-39.08*pwm_3-9.53*mv +20.57*pwm_3**2 + 38.43*pwm_3*mv
@@ -70,12 +74,10 @@ if __name__ == '__main__':
     #parser.add_argument("file_usd")
     #args = parser.parse_args()
     #data_usd = cfusdlog.decode(args.file_usd)
-    data_usd = cfusdlog.decode("log01")
+    data_usd = cfusdlog.decode("hardware/data/jana06")
     data = data_usd['fixedFrequency']
 
     I = MultirotorConfig.INERTIA
-    ct =MultirotorConfig.THRUST_C
-    cq = MultirotorConfig.TORQUE_C
     d = MultirotorConfig.DISTANCE_M_C
     m = MultirotorConfig.MASS
     acc = []
@@ -87,6 +89,11 @@ if __name__ == '__main__':
     vel = []
     acc = []
     quaternions = []
+    pwm_1 = preprocessing.normalize(data['pwm.m1_pwm'][None])[0]
+    pwm_2 = preprocessing.normalize(data['pwm.m2_pwm'][None])[0]
+    pwm_3 = preprocessing.normalize(data['pwm.m3_pwm'][None])[0]
+    pwm_4 =preprocessing.normalize(data['pwm.m4_pwm'][None])[0]
+    mv = preprocessing.normalize(data['pm.vbatMV'][None])[0]
 
     vel_a.append(np.array([data['gyro.x'][0], data['gyro.y'][0], data['gyro.z'][0]]))
     vel.append(np.array([data['stateEstimate.vx'][0], data['stateEstimate.vy'][0], data['stateEstimate.vz'][0]]))
@@ -96,8 +103,7 @@ if __name__ == '__main__':
     for i in range(len(data['timestamp'])):
         R = rowan.to_matrix(quaternions[i])
         z_b= np.asarray(R@z_w) 
-        #w = np.array([data['rpm.m1'][i], data['rpm.m2'][i], data['rpm.m3'][i], data['rpm.m4'][i]]) 
-        u = thrust_torque(data['pwm.m1_pwm'][i], data['pwm.m2_pwm'][i], data['pwm.m3_pwm'][i], data['pwm.m4_pwm'][i], data['pm.vbatMV'][i])
+        u = thrust_torque(pwm_1[i], pwm_2[i], pwm_3[i], pwm_4[i], mv[i])
 
         time = data['timestamp'][i]
 
