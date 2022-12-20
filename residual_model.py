@@ -33,8 +33,8 @@ def angular_acceleration(a_vel, prev_time, time):
     return a_acc
 
 def disturbance_forces(m, vel, R, f_u):
-    g = np.array([0,0,9.81]).T
-    f_a = m*vel - m*g - R*f_u
+    g = np.array([0,0,9.81])
+    f_a = m*vel - m*g - R@f_u
     return f_a
 
 
@@ -51,25 +51,48 @@ if __name__ == '__main__':
     data = data_usd['fixedFrequency']
     start_time = data['timestamp'][0]
     I = MultirotorConfig.INERTIA
-    ct =MultirotorConfig.THRUST_C
-    cq = MultirotorConfig.TORQUE_C
     d = MultirotorConfig.DISTANCE_M_C
     m = MultirotorConfig.MASS
-
+    f = []
+    tau = []
     prev_time = start_time
 
     for i in range(1, len(data['timestamp'])):
         time = data['timestamp'][i]
         a_vel = np.array([data['gyro.x'][i], data['gyro.y'][i], data['gyro.z'][i]])
         vel = np.array([data['stateEstimate.vx'][i], data['stateEstimate.vy'][i], data['stateEstimate.vz'][i]])
-        w = np.array([data['rpm.m1'][i], data['rpm.m2'][i], data['rpm.m3'][i], data['rpm.m4'][i]]) 
+
         R = rowan.to_matrix(np.array([data['stateEstimate.qw'][i],data['stateEstimate.qx'][i], data['stateEstimate.qy'][i], data['stateEstimate.qz'][i]]))
         u = thrust_torque(data['pwm.m1_pwm'][i], data['pwm.m2_pwm'][i], data['pwm.m3_pwm'][i], data['pwm.m4_pwm'][i], data['pm.vbatMV'][i])
         a_acc = angular_acceleration(a_vel, prev_time, time)
         f_u = np.array([0,0, u[0]])
         f_a = disturbance_forces(m, vel, R, f_u)
+        f.append(f_a)
 
         tau_u = np.array([u[1], u[2], u[3]])
         tau_a = disturbance_torques(I, a_acc, a_vel, tau_u)
+        tau.append(tau_a)
+
+    f = np.array(f)
+    tau = np.array(tau)
+    fig, ax = plt.subplots(2)
+    ax[0].plot(data['timestamp'][1:], f[:,0], '-', label='X')
+    ax[0].plot(data['timestamp'][1:], f[:,1], '-', label='Y')
+    ax[0].plot(data['timestamp'][1:], f[:,2], '-', label='Z')
+    ax[0].set_xlabel('timestamp [ms]')
+    ax[0].set_ylabel('f_a')
+    ax[0].set_title('f_a')
+    ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    ax[1].plot(data['timestamp'][1:], tau[:,0], '-', label='X')
+    ax[1].plot(data['timestamp'][1:], tau[:,1], '-', label='Y')
+    ax[1].plot(data['timestamp'][1:], tau[:,2], '-', label='Z')
+    ax[1].set_xlabel('timestamp [ms]')
+    ax[1].set_ylabel('tau_a')
+    ax[1].set_title('tau_a')
+    ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    plt.show()
+
 
 
