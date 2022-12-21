@@ -4,7 +4,7 @@ Meetings:
 
 progress:
 -fixed issues for the model except for acceleration<br  />
--
+- first version for a model for f_a
 
 discussion:
 - is the acceleration in g-unit? <br  />
