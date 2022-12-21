@@ -136,7 +136,7 @@ def compare_acceleration(data, acc):
     ax[0].plot(data['timestamp'], data['acc.y'], '-', label='Y')
     ax[0].plot(data['timestamp'], data['acc.z'], '-', label='Z')
     ax[0].set_xlabel('timestamp [ms]')
-    ax[0].set_ylabel('acceleration [m/s²]')
+    ax[0].set_ylabel('acceleration [g]')
     ax[0].set_title('data acceleration')
     ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
 
@@ -144,7 +144,7 @@ def compare_acceleration(data, acc):
     ax[1].plot(data['timestamp'], acc[:,1], '-', label='Y')
     ax[1].plot(data['timestamp'], acc[:,2], '-', label='Z')
     ax[1].set_xlabel('timestamp [ms]')
-    ax[1].set_ylabel('acceleration [m/s²]')
+    ax[1].set_ylabel('acceleration [g]')
     ax[1].set_title('output acceleration')
     ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
 

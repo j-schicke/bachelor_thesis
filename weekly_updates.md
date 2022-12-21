@@ -1,5 +1,17 @@
 Meetings:
 
+22.12-29.12:
+
+progress:
+-fixed issues for the model except for acceleration<br  />
+-
+
+discussion:
+- is the acceleration in g-unit? <br  />
+- the acceleration output in g-unit is still 10x higher than the acceleration data <br  />
+
+
+
 
 16.12-21.12:
 
@@ -9,7 +21,7 @@ calculate f_a and tau_a of the residual model
 
 discussion:
 
-the error of the model is really high (both angular and linear) -> error in the code of newton euler equation
+the error of the model is really high (both angular and linear) -> error in the code of newton euler equation <br  />
 
 
 09.12-15.12:
