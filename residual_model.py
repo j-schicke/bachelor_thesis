@@ -62,16 +62,17 @@ def train_loop(model, X, y ,loss_fn, optimizer):
 def train_model(data, f):
     X = np.array(tuple(data.values()) ).T[:-1]
     y = np.array(f)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7)
     
-    X_train = torch.from_numpy(X) 
-    y_train = torch.from_numpy(y)
+    X_train = torch.from_numpy(X_train) 
+    y_train = torch.from_numpy(y_train)
 
 
     model = NeuralNetwork()
     model.double()
     epos = 10
     loss_fn = nn.MSELoss()
-    optimizer = torch.optim.RMSprop(model.parameters(), lr =0.003)
+    optimizer = torch.optim.SGD(model.parameters(), lr =0.003)
     
     for t in range(epos):
         print(f"Epoch {t+1}\n-------------------------------")
@@ -81,11 +82,6 @@ def train_model(data, f):
 
     print("Done!")
     torch.save(model.state_dict(), 'model_1.pth')
-
-
-
-
-
 
 
 if __name__ == '__main__':
