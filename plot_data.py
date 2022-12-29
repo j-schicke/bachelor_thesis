@@ -9,6 +9,7 @@ import numpy as np
 import mplcursors
 import functools
 from mpl_toolkits.mplot3d import Axes3D
+import rowan
 
 
 
@@ -50,6 +51,28 @@ def compare_gyro(data, vel_a):
     ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
 
     plt.savefig('pdf/angular_velocity.pdf')  
+
+def compare_position(data, pos):
+
+    fig,ax = plt.subplots(2)
+
+    ax[0].plot(data['timestamp'], data['stateEstimate.x'], '-', label='X')
+    ax[0].plot(data['timestamp'], data['stateEstimate.y'], '-', label='Y')
+    ax[0].plot(data['timestamp'], data['stateEstimate.z'], '-', label='Z')
+    ax[0].set_xlabel('timestamp [ms]')
+    ax[0].set_ylabel('position')
+    ax[0].set_title('data position')
+    ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    ax[1].plot(data['timestamp'], pos[:,0], '-', label='X')
+    ax[1].plot(data['timestamp'], pos[:,1], '-', label='Y')
+    ax[1].plot(data['timestamp'], pos[:,2], '-', label='Z')
+    ax[1].set_xlabel('timestamp [ms]')
+    ax[1].set_ylabel('position')
+    ax[1].set_title('output position')
+    ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    plt.savefig('pdf/position.pdf')  
 
 
 def trajectory(data):
@@ -153,11 +176,11 @@ def compare_acceleration(data, acc):
 
 def error_acceleration(data, err_acc):
     fig, ax = plt.subplots()
-    ax.plot(data['timestamp'], err_acc[:,0], '-', label='X')
-    ax.plot(data['timestamp'], err_acc[:,1], '-', label='Y')
-    ax.plot(data['timestamp'], err_acc[:,2], '-', label='Z')
+    ax.plot(data['timestamp'][1:], err_acc[:,0], '-', label='X')
+    ax.plot(data['timestamp'][1:], err_acc[:,1], '-', label='Y')
+    ax.plot(data['timestamp'][1:], err_acc[:,2], '-', label='Z')
     ax.set_xlabel('timestamp [ms]')
-    ax.set_ylabel('acceleration [m/s²]')
+    ax.set_ylabel('acceleration [g]')
     ax.set_title('error acceleration')
     ax.legend(loc=9, ncol=3, borderaxespad=0.)
 
@@ -165,9 +188,9 @@ def error_acceleration(data, err_acc):
 
 def error_velocity(data, err_vel):
     fig, ax = plt.subplots()
-    ax.plot(data['timestamp'], err_vel[:,0], '-', label='X')
-    ax.plot(data['timestamp'], err_vel[:,1], '-', label='Y')
-    ax.plot(data['timestamp'], err_vel[:,2], '-', label='Z')
+    ax.plot(data['timestamp'][1:], err_vel[:,0], '-', label='X')
+    ax.plot(data['timestamp'][1:], err_vel[:,1], '-', label='Y')
+    ax.plot(data['timestamp'][1:], err_vel[:,2], '-', label='Z')
     ax.set_xlabel('timestamp [ms]')
     ax.set_ylabel('velocity [m/s]')
     ax.set_title('error velocity')
@@ -177,9 +200,9 @@ def error_velocity(data, err_vel):
 def error_angular_velocity(data, err_vel_a):
     fig, ax = plt. subplots()
 
-    ax.plot(data['timestamp'],err_vel_a[:,0], '-', label='X')
-    ax.plot(data['timestamp'], err_vel_a[:,1], '-', label='Y')
-    ax.plot(data['timestamp'], err_vel_a[:,2], '-', label='Z')
+    ax.plot(data['timestamp'][1:],err_vel_a[:,0], '-', label='X')
+    ax.plot(data['timestamp'][1:], err_vel_a[:,1], '-', label='Y')
+    ax.plot(data['timestamp'][1:], err_vel_a[:,2], '-', label='Z')
     ax.set_xlabel('timestamp [ms]')
     ax.set_ylabel('angular_velocity [°/s]')
     ax.set_title('error angular velocity')
@@ -191,10 +214,10 @@ def error_quaternions(data, err_quat):
 
     fig, ax = plt.subplots()
 
-    ax.plot(data['timestamp'], err_quat[:,0], '-', label='W')
-    ax.plot(data['timestamp'], err_quat[:,1], '-', label='X')
-    ax.plot(data['timestamp'], err_quat[:,2], '-', label='Y')
-    ax.plot(data['timestamp'], err_quat[:,3], '-', label='Z')  
+    ax.plot(data['timestamp'][1:], err_quat[:,0], '-', label='W')
+    ax.plot(data['timestamp'][1:], err_quat[:,1], '-', label='X')
+    ax.plot(data['timestamp'][1:], err_quat[:,2], '-', label='Y')
+    ax.plot(data['timestamp'][1:], err_quat[:,3], '-', label='Z')  
     ax.set_xlabel('timestamp [ms]')
     ax.set_ylabel('quaternions')
     ax.set_title('error quaternion')
@@ -202,12 +225,20 @@ def error_quaternions(data, err_quat):
 
     plt.savefig('pdf/error/error_quaternions.pdf')
 
+def distance_quaternions(data, quat_dist):
+    fig, ax = plt.subplots()
+    ax.plot(data['timestamp'][1:], quat_dist[:], '-')
+    ax.set_xlabel('timestamp [ms]')
+    ax.set_ylabel('quaternions distance')
+    ax.set_title('distance between quaternions')    
+    plt.savefig('pdf/error/dist_quaternions.pdf')
+
   
 def error_position(data, err_pos):
     fig, ax = plt.subplots()
-    ax.plot(data['timestamp'], err_pos[:,0], '-', label='X')
-    ax.plot(data['timestamp'], err_pos[:,1], '-', label='Y')
-    ax.plot(data['timestamp'], err_pos[:,2], '-', label='Z')
+    ax.plot(data['timestamp'][1:], err_pos[:,0], '-', label='X')
+    ax.plot(data['timestamp'][1:], err_pos[:,1], '-', label='Y')
+    ax.plot(data['timestamp'][1:], err_pos[:,2], '-', label='Z')
     ax.set_xlabel('timestamp [ms]')
     ax.set_ylabel('position')
     ax.set_title('error position')
@@ -216,27 +247,61 @@ def error_position(data, err_pos):
     plt.savefig('pdf/error/error_position.pdf')
 
 
+def residual_plot(data, f, tau):
+
+    fig, ax = plt.subplots(2)
+    ax[0].plot(data['timestamp'][1:], f[:,0], '-', label='X')
+    ax[0].plot(data['timestamp'][1:], f[:,1], '-', label='Y')
+    ax[0].plot(data['timestamp'][1:], f[:,2], '-', label='Z')
+    ax[0].set_xlabel('timestamp [ms]')
+    ax[0].set_ylabel('f_a')
+    ax[0].set_title('f_a')
+    ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    ax[1].plot(data['timestamp'][1:], tau[:,0], '-', label='X')
+    ax[1].plot(data['timestamp'][1:], tau[:,1], '-', label='Y')
+    ax[1].plot(data['timestamp'][1:], tau[:,2], '-', label='Z')
+    ax[1].set_xlabel('timestamp [ms]')
+    ax[1].set_ylabel('tau_a_')
+    ax[1].set_title('tau_a')
+
+    ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
+    plt.savefig('pdf/tau_a and f_a.pdf')
 
 
-def errors(data, acc, vel, vel_a, quaternions, pos):
-    err_acc = acc - np.array([data['acc.x'], data['acc.y'], data['acc.z']]).T
-    err_vel = vel - np.array([data['stateEstimate.vx'], data['stateEstimate.vy'], data['stateEstimate.vz']]).T
-    err_vel_a = vel_a - np.array([data['gyro.x'], data['gyro.y'], data['gyro.z']]).T
-    err_quat = quaternions - np.array([data['stateEstimate.qw'],data['stateEstimate.qx'], data['stateEstimate.qy'], data['stateEstimate.qz']]).T
-    err_pos = pos - np.array([data['stateEstimate.x'], data['stateEstimate.y'], data['stateEstimate.z']]).T
+def losses(train_losses, test_losses):
+    train_losses = np.hstack((train_losses))
+    test_losses = np.hstack(test_losses)
+
+    fig, ax = plt.subplots(2)
+    ax[0].plot(range(len(train_losses)), train_losses)
+    ax[0].set_xlabel('batch')
+    ax[0].set_ylabel('losses')
+    ax[0].set_title('Train loss')
+
+    ax[1].plot(range(len(test_losses)), test_losses)
+    ax[1].set_xlabel('batch')
+    ax[1].set_ylabel('losses')
+    ax[1].set_title('Test loss')
+
+    plt.savefig('pdf/losses.pdf')
+
+def errors(data, err_acc, err_vel, err_pos, err_vel_a, err_quaternions, quat_dist):
 
     error_acceleration(data, err_acc)
     error_velocity(data, err_vel)
     error_angular_velocity(data, err_vel_a)
-    error_quaternions(data, err_quat)
+    error_quaternions(data, err_quaternions)
     error_position(data, err_pos)
+    distance_quaternions(data, quat_dist)
 
-def compare_data(data, quaternions, acc, vel, vel_a):
+def compare_data(data, quaternions, acc, vel, vel_a, pos):
 
     compare_quaternions(data, quaternions)
     compare_acceleration(data,acc)
     compare_velocity(data, vel)
     compare_gyro(data,vel_a)
+    compare_position(data, pos)
 
 if __name__ == "__main__":
     #parser = argparse.ArgumentParser()

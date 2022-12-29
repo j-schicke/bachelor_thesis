@@ -1,5 +1,21 @@
 Meetings:
 
+30.12-05.01.
+
+progress:
+- plot test and trainings loss <br  />
+- fixed acceleration <br  />
+- worked on model for f_a  <br  />
+- plot position, tau_a, f_a <br  />
+- 
+
+discussion:
+- should I use a fewer attributes for the model <br  />
+- quaternion error as distance between two quaternions or error = q2*q1⁻¹  <br  />
+- acceleration and f_a both 3rd value in the array is different than it should be  <br  />
+
+
+
 22.12-29.12:
 
 progress:
@@ -9,7 +25,6 @@ progress:
 discussion:
 - is the acceleration in g-unit? <br  />
 - the acceleration output in g-unit is still 10x higher than the acceleration data <br  />
-
 
 
 
