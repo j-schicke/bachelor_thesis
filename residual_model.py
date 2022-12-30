@@ -61,6 +61,7 @@ if __name__ == '__main__':
         f_a = disturbance_forces(m, acc, R, f_u)
         f.append(f_a)
         X = np.array(tuple(data.values()) ).T[i][1:]
+        X = preprocessing.normalize(X[None])[0]
         X = torch.from_numpy(X) 
         pred.append(model(X).cpu().detach().numpy())
         tau_u = np.array([u[1], u[2], u[3]])
