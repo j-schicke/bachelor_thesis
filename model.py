@@ -1,6 +1,5 @@
 import torch
 from torch import nn
-from torch.utils.data import DataLoader
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
@@ -9,7 +8,7 @@ from plot_data import losses
 
 
 class NeuralNetwork(nn.Module):
-    def __init__(self, input_size = 25, hidden_size = 15, output_size = 3):
+    def __init__(self, input_size = 25, hidden_size = 15, output_size = 6):
         super(NeuralNetwork, self).__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
@@ -25,7 +24,8 @@ class NeuralNetwork(nn.Module):
         return f_a
 
     def train_loop(self, X, y ,loss_fn, optimizer):
-        epoch_loss = []
+        self.train()
+        train_loss = []
         for i in range(len(y)):
             
             optimizer.zero_grad()
@@ -35,10 +35,11 @@ class NeuralNetwork(nn.Module):
             loss.backward()
             optimizer.step()
             loss = loss.item()
-            epoch_loss.append(loss)
+            train_loss.append(loss)
+        avg_train = np.array(train_loss).sum()/len(y)
 
-        print(f'avg. train loss: {np.array(epoch_loss).sum()/len(y) :> 5f}')
-        return epoch_loss
+        print(f'avg. train loss: {avg_train :> 5f}')
+        return avg_train
 
     def test_loop(self, X, y, loss_fn):
         self.eval()
@@ -48,35 +49,32 @@ class NeuralNetwork(nn.Module):
                 pred = self.forward(X[i])
                 test_loss = loss_fn(pred, y[i])
                 test_losses.append(test_loss.item())
-        print(f'avg. test loss: {np.array(test_losses).sum()/len(y) :> 5f}')
-        return test_losses
+        avg_test = np.array(test_losses).sum()/len(y) 
+        print(f'avg. test loss: {avg_test :> 5f}')
+        return avg_test
 
 
-    def train_model(self, data, f):
+    def train_model(self, data, y):
         del data['timestamp']
         X = np.array(tuple(data.values()) ).T[:-1]
-        y = np.array(f)
+        y = np.array(y)
         X = preprocessing.normalize(X)
 
         X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state= 13)
 
-        #X_train = preprocessing.normalize(X_train)
         X_train = torch.from_numpy(X_train) 
         
-        #X_test = preprocessing.normalize(X_test)
         X_test = torch.from_numpy(X_test)
 
         y_train = torch.from_numpy(y_train)
         y_test = torch.from_numpy(y_test)
         self.double()
-        epos = 20
+        epos = 25
         loss_fn = nn.MSELoss()
         optimizer = torch.optim.SGD(self.parameters(), lr =0.01)
         train_losses = []
-        train_accuracy = []
 
         test_losses = []
-        test_accuracy = []
         
         for t in range(epos):
             print(f"Epoch {t+1}\n-------------------------------")

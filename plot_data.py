@@ -78,17 +78,18 @@ def compare_position(data, pos):
 def trajectory(data):
     fig = plt.figure()
     ax = plt.axes(projection='3d')
-    zline = data['stateEstimate.z']
     xline = data['stateEstimate.x']
     yline = data['stateEstimate.y']
+    zline = data['stateEstimate.z']
+
     ax.plot3D(xline, yline, zline, 'gray')
-    t = (data['timestamp'] - start_time) / 1000
+    ax.view_init(-100, 100)
 
     ax.set_xlabel('x')
     ax.set_ylabel('y')
     ax.set_zlabel('z')
 
-    fig.show()
+    plt.savefig('pdf/trajectory.pdf')
 
 def compare_velocity(data, vel):
 
@@ -225,15 +226,6 @@ def error_quaternions(data, err_quat):
 
     plt.savefig('pdf/error/error_quaternions.pdf')
 
-def distance_quaternions(data, quat_dist):
-    fig, ax = plt.subplots()
-    ax.plot(data['timestamp'][1:], quat_dist[:], '-')
-    ax.set_xlabel('timestamp [ms]')
-    ax.set_ylabel('quaternions distance')
-    ax.set_title('distance between quaternions')    
-    plt.savefig('pdf/error/dist_quaternions.pdf')
-
-  
 def error_position(data, err_pos):
     fig, ax = plt.subplots()
     ax.plot(data['timestamp'][1:], err_pos[:,0], '-', label='X')
@@ -270,30 +262,25 @@ def residual_plot(data, f, tau):
 
 
 def losses(train_losses, test_losses):
-    train_losses = np.hstack((train_losses))
-    test_losses = np.hstack(test_losses)
 
-    fig, ax = plt.subplots(2)
-    ax[0].plot(range(len(train_losses)), train_losses)
-    ax[0].set_xlabel('batch')
-    ax[0].set_ylabel('losses')
-    ax[0].set_title('Train loss')
+    fig, ax = plt.subplots()
+    ax.plot(range(len(train_losses)), train_losses, label = 'training')
+    ax.plot(range(len(test_losses)), test_losses, label = 'test')
+    ax.set_xlabel('batch')
+    ax.set_ylabel('loss')
+    ax.set_title('losses')
 
-    ax[1].plot(range(len(test_losses)), test_losses)
-    ax[1].set_xlabel('batch')
-    ax[1].set_ylabel('losses')
-    ax[1].set_title('Test loss')
+    ax.legend(loc=9, ncol=3, borderaxespad=0.)
 
     plt.savefig('pdf/losses.pdf')
 
-def errors(data, err_acc, err_vel, err_pos, err_vel_a, err_quaternions, quat_dist):
+def errors(data, err_acc, err_vel, err_pos, err_vel_a, err_quaternions):
 
     error_acceleration(data, err_acc)
     error_velocity(data, err_vel)
     error_angular_velocity(data, err_vel_a)
     error_quaternions(data, err_quaternions)
     error_position(data, err_pos)
-    distance_quaternions(data, quat_dist)
 
 def compare_data(data, quaternions, acc, vel, vel_a, pos):
 
