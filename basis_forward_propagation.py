@@ -109,7 +109,7 @@ def main(path,name):
 
         a = acceleration(u, z_w, z_b)
         acc.append(a)
-        err_a = np.array([data['acc.x'][i+1], data['acc.y'][i+1], data['acc.z'][i+1]])*g -a
+        err_a = np.array([data['acc.x'][i+1], data['acc.y'][i+1], data['acc.z'][i+1]]) -a*ms2g
         err_acc.append(err_a)
 
         v = velocity(acc[i], np.array([data['stateEstimate.vx'][i], data['stateEstimate.vy'][i], data['stateEstimate.vz'][i]]), time, prev_time)

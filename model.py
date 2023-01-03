@@ -71,7 +71,7 @@ class NeuralNetwork(nn.Module):
         self.double()
         epos = 25
         loss_fn = nn.MSELoss()
-        optimizer = torch.optim.SGD(self.parameters(), lr =0.01)
+        optimizer = torch.optim.SGD(self.parameters(), lr =0.03)
         train_losses = []
 
         test_losses = []

@@ -1,7 +1,7 @@
 import numpy as np
 
 class MultirotorConfig:
-    MASS = 0.034 #kg
+    MASS = 0.0347 #kg
     INERTIA = np.array([[16.571710, 0.830306, 0.718277], [0.830806, 16.655602, 1.800197], [0.718277, 1.800197, 29.261652]])*10**(-6) #kg*m²
     DISTANCE_ARM  = 0.046 #meters
     ARM = 0.707106781 * DISTANCE_ARM # Arm

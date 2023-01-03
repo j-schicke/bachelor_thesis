@@ -26,7 +26,7 @@ def angular_acceleration(a_vel, prev_time, time):
 
 def disturbance_forces(m, acc, R, f_u):
     g_m = np.array([0,0,-g])
-    f_a = m*(acc-np.array([0,0,g])) - m*g_m - R@f_u
+    f_a = m*acc - m*g_m - R@f_u
     return f_a
 
 def disturbance_torques(a_acc, a_vel, tau_u):
@@ -75,7 +75,7 @@ def main(path, name):
     for i in range(1,len(data['timestamp'])):
         time = data['timestamp'][i]
         a_vel = np.array([data['gyro.x'][i], data['gyro.y'][i], data['gyro.z'][i]])*d2r
-        acc = np.array([data['acc.x'][i], data['acc.y'][i], data['acc.z'][i]])*g
+        acc = np.array([data['acc.x'][i], data['acc.y'][i], data['acc.z'][i]-1])*g
 
         R = rowan.to_matrix(np.array([data['stateEstimate.qw'][i],data['stateEstimate.qx'][i], data['stateEstimate.qy'][i], data['stateEstimate.qz'][i]]))
         u = thrust_torque(pwm_1[i], pwm_2[i], pwm_3[i], pwm_4[i], mv[i])
@@ -102,6 +102,6 @@ if __name__ == '__main__':
     name = f"jana00"
     data, f_a, tau_a, = main(path, name)
 
-    model_predict_train(data, f_a, tau_a)
+    #model_predict_train(data, f_a, tau_a, training= True)
 
     
