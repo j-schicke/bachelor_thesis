@@ -6,7 +6,7 @@ from config.multirotor_config import MultirotorConfig
 import rowan
 from sklearn import preprocessing
 from model import NeuralNetwork
-from Basis_Forward_Propagation import thrust_torque
+from basis_forward_propagation import thrust_torque
 from plot_data import residual_plot
 import torch
 
@@ -55,8 +55,8 @@ if __name__ == '__main__':
     mv = preprocessing.normalize(data['pm.vbatMV'][None])[0]
     model = NeuralNetwork()
     model.double()
-    model.load_state_dict(torch.load('model_1.pth'))
-    pred = []
+    # model.load_state_dict(torch.load('model_1.pth'))
+    # pred = []
 
     for i in range(1,len(data['timestamp'])):
         time = data['timestamp'][i]
@@ -69,10 +69,10 @@ if __name__ == '__main__':
         f_u = np.array([0,0, u[0]])
         f_a = disturbance_forces(m, acc, R, f_u)
         f.append(f_a)
-        X = np.array(tuple(data.values()) ).T[i][1:]
-        X = preprocessing.normalize(X[None])[0]
-        X = torch.from_numpy(X) 
-        pred.append(model(X).cpu().detach().numpy())
+        # X = np.array(tuple(data.values()) ).T[i][1:]
+        # X = preprocessing.normalize(X[None])[0]
+        # X = torch.from_numpy(X) 
+        # pred.append(model(X).cpu().detach().numpy())
         tau_u = np.array([u[1], u[2], u[3]])
         tau_a = disturbance_torques(a_acc, a_vel, tau_u)
         tau.append(tau_a)
@@ -80,29 +80,29 @@ if __name__ == '__main__':
 
     f = np.array(f)
     tau = np.array(tau)
-    pred = np.array(pred)
+    # pred = np.array(pred)
     y = np.append(f, tau, axis = 1)
 
-    fig, ax = plt.subplots(2)
-    ax[0].plot(data['timestamp'][1:], tau[:,0], '-', label='X')
-    ax[0].plot(data['timestamp'][1:], tau[:,1], '-', label='Y')
-    ax[0].plot(data['timestamp'][1:], tau[:,2], '-', label='Z')
-    ax[0].set_xlabel('timestamp [ms]')
-    ax[0].set_ylabel('f_a')
-    ax[0].set_title('f_a')
-    ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
+    # fig, ax = plt.subplots(2)
+    # ax[0].plot(data['timestamp'][1:], tau[:,0], '-', label='X')
+    # ax[0].plot(data['timestamp'][1:], tau[:,1], '-', label='Y')
+    # ax[0].plot(data['timestamp'][1:], tau[:,2], '-', label='Z')
+    # ax[0].set_xlabel('timestamp [ms]')
+    # ax[0].set_ylabel('f_a')
+    # ax[0].set_title('f_a')
+    # ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
 
-    ax[1].plot(data['timestamp'][1:], pred[:,3], '-', label='X')
-    ax[1].plot(data['timestamp'][1:], pred[:,4], '-', label='Y')
-    ax[1].plot(data['timestamp'][1:], pred[:,5], '-', label='Z')
-    ax[1].set_xlabel('timestamp [ms]')
-    ax[1].set_ylabel('f_p')
-    ax[1].set_title('f predicted')
-    ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
-    plt.show()
+    # ax[1].plot(data['timestamp'][1:], pred[:,3], '-', label='X')
+    # ax[1].plot(data['timestamp'][1:], pred[:,4], '-', label='Y')
+    # ax[1].plot(data['timestamp'][1:], pred[:,5], '-', label='Z')
+    # ax[1].set_xlabel('timestamp [ms]')
+    # ax[1].set_ylabel('f_p')
+    # ax[1].set_title('f predicted')
+    # ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
+    # plt.show()
     
     residual_plot(data, f, tau)
 
-    #model.train_model(data, y)
+    model.train_model(data, y)
 
 

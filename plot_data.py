@@ -2,14 +2,11 @@
 """
 plotting a generic USD log
 """
-import cfusdlog
 import matplotlib.pyplot as plt
-import argparse
 import numpy as np
 import mplcursors
 import functools
 from mpl_toolkits.mplot3d import Axes3D
-import rowan
 
 
 
@@ -30,7 +27,7 @@ def plot_all(data):
 
     plt.show()
 
-def compare_gyro(data, vel_a):
+def compare_gyro(data, vel_a, name):
 
     fig,ax = plt.subplots(2)
 
@@ -50,9 +47,9 @@ def compare_gyro(data, vel_a):
     ax[1].set_title('output angular_velocity')
     ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
 
-    plt.savefig('pdf/angular_velocity.pdf')  
+    plt.savefig(f'pdf/{name}/angular_velocity.pdf')  
 
-def compare_position(data, pos):
+def compare_position(data, pos, name):
 
     fig,ax = plt.subplots(2)
 
@@ -72,10 +69,10 @@ def compare_position(data, pos):
     ax[1].set_title('output position')
     ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
 
-    plt.savefig('pdf/position.pdf')  
+    plt.savefig(f'pdf/{name}/position.pdf')  
 
 
-def trajectory(data):
+def trajectory(data, name):
     fig = plt.figure()
     ax = plt.axes(projection='3d')
     xline = data['stateEstimate.x']
@@ -89,9 +86,9 @@ def trajectory(data):
     ax.set_ylabel('y')
     ax.set_zlabel('z')
 
-    plt.savefig('pdf/trajectory.pdf')
+    plt.savefig(f'pdf/{name}/trajectory.pdf')
 
-def compare_velocity(data, vel):
+def compare_velocity(data, vel, name):
 
     fig,ax = plt.subplots(2)
 
@@ -111,7 +108,7 @@ def compare_velocity(data, vel):
     ax[1].set_title('output velocity')
     ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
 
-    plt.savefig('pdf/velocity.pdf')  
+    plt.savefig(f'pdf/{name}/velocity.pdf')  
 
 
 def rpm(data):
@@ -127,7 +124,7 @@ def rpm(data):
 
     plt.show()
 
-def compare_quaternions(data, quaternions):
+def compare_quaternions(data, quaternions, name):
 
     fig, ax = plt.subplots(2)
 
@@ -149,11 +146,11 @@ def compare_quaternions(data, quaternions):
     ax[1].set_title('output quaternions')
     ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
 
-    plt.savefig('pdf/quaternions.pdf')  
+    plt.savefig(f'pdf/{name}/quaternions.pdf')  
 
 
 
-def compare_acceleration(data, acc):
+def compare_acceleration(data, acc, name):
 
     fig,ax = plt.subplots(2)
     ax[0].plot(data['timestamp'], data['acc.x'], '-', label='X')
@@ -172,10 +169,10 @@ def compare_acceleration(data, acc):
     ax[1].set_title('output acceleration')
     ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
 
-    plt.savefig('pdf/acceleration.pdf')
+    plt.savefig(f'pdf/{name}/acceleration.pdf')
 
 
-def error_acceleration(data, err_acc):
+def error_acceleration(data, err_acc, name):
     fig, ax = plt.subplots()
     ax.plot(data['timestamp'][1:], err_acc[:,0], '-', label='X')
     ax.plot(data['timestamp'][1:], err_acc[:,1], '-', label='Y')
@@ -185,9 +182,9 @@ def error_acceleration(data, err_acc):
     ax.set_title('error acceleration')
     ax.legend(loc=9, ncol=3, borderaxespad=0.)
 
-    plt.savefig('pdf/error/error_acceleration.pdf')
+    plt.savefig(f'pdf/{name}/error/error_acceleration.pdf')
 
-def error_velocity(data, err_vel):
+def error_velocity(data, err_vel, name):
     fig, ax = plt.subplots()
     ax.plot(data['timestamp'][1:], err_vel[:,0], '-', label='X')
     ax.plot(data['timestamp'][1:], err_vel[:,1], '-', label='Y')
@@ -196,9 +193,9 @@ def error_velocity(data, err_vel):
     ax.set_ylabel('velocity [m/s]')
     ax.set_title('error velocity')
     ax.legend(loc=9, ncol=3, borderaxespad=0.)
-    plt.savefig('pdf/error/error_velocity.pdf')
+    plt.savefig(f'pdf/{name}/error/error_velocity.pdf')
 
-def error_angular_velocity(data, err_vel_a):
+def error_angular_velocity(data, err_vel_a, name):
     fig, ax = plt. subplots()
 
     ax.plot(data['timestamp'][1:],err_vel_a[:,0], '-', label='X')
@@ -209,9 +206,9 @@ def error_angular_velocity(data, err_vel_a):
     ax.set_title('error angular velocity')
     ax.legend(loc=9, ncol=3, borderaxespad=0.)
 
-    plt.savefig('pdf/error/error_angular_velocity.pdf')
+    plt.savefig(f'pdf/{name}/error/error_angular_velocity.pdf')
 
-def error_quaternions(data, err_quat):
+def error_quaternions(data, err_quat, name):
 
     fig, ax = plt.subplots()
 
@@ -224,9 +221,9 @@ def error_quaternions(data, err_quat):
     ax.set_title('error quaternion')
     ax.legend(loc=9, ncol=3, borderaxespad=0.)
 
-    plt.savefig('pdf/error/error_quaternions.pdf')
+    plt.savefig(f'pdf/{name}/error/error_quaternions.pdf')
 
-def error_position(data, err_pos):
+def error_position(data, err_pos, name):
     fig, ax = plt.subplots()
     ax.plot(data['timestamp'][1:], err_pos[:,0], '-', label='X')
     ax.plot(data['timestamp'][1:], err_pos[:,1], '-', label='Y')
@@ -236,7 +233,7 @@ def error_position(data, err_pos):
     ax.set_title('error position')
     ax.legend(loc=9, ncol=3, borderaxespad=0.)
     
-    plt.savefig('pdf/error/error_position.pdf')
+    plt.savefig(f'pdf/{name}/error/error_position.pdf')
 
 
 def residual_plot(data, f, tau):
@@ -274,34 +271,18 @@ def losses(train_losses, test_losses):
 
     plt.savefig('pdf/losses.pdf')
 
-def errors(data, err_acc, err_vel, err_pos, err_vel_a, err_quaternions):
+def errors(data, err_acc, err_vel, err_pos, err_vel_a, err_quaternions, name):
 
-    error_acceleration(data, err_acc)
-    error_velocity(data, err_vel)
-    error_angular_velocity(data, err_vel_a)
-    error_quaternions(data, err_quaternions)
-    error_position(data, err_pos)
+    error_acceleration(data, err_acc, name)
+    error_velocity(data, err_vel, name)
+    error_angular_velocity(data, err_vel_a, name)
+    error_quaternions(data, err_quaternions, name)
+    error_position(data, err_pos, name)
 
-def compare_data(data, quaternions, acc, vel, vel_a, pos):
+def compare_data(data, quaternions, acc, vel, vel_a, pos, name):
 
-    compare_quaternions(data, quaternions)
-    compare_acceleration(data,acc)
-    compare_velocity(data, vel)
-    compare_gyro(data,vel_a)
-    compare_position(data, pos)
-
-if __name__ == "__main__":
-    #parser = argparse.ArgumentParser()
-    #parser.add_argument("file_usd")
-    #args = parser.parse_args()
-    #data_usd = cfusdlog.decode(args.file_usd)
-
-    data_usd = cfusdlog.decode("log01")
-    data = data_usd['fixedFrequency']
-    # decode binary log data
-
-
-    # find start time
-    data = data_usd['fixedFrequency']
-    start_time = data['timestamp'][0]
-    # new figure
+    compare_quaternions(data, quaternions, name)
+    compare_acceleration(data,acc, name)
+    compare_velocity(data, vel, name)
+    compare_gyro(data,vel_a, name)
+    compare_position(data, pos, name)
