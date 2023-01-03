@@ -7,8 +7,7 @@ import rowan
 from sklearn import preprocessing
 from model import NeuralNetwork
 from basis_forward_propagation import thrust_torque
-from plot_data import residual_plot
-import torch
+from plot_data import tau_a_plot, f_a_plot
 
 ms2s = MultirotorConfig.ms2s
 g = MultirotorConfig.GRAVITATION
@@ -33,12 +32,9 @@ def disturbance_torques(a_acc, a_vel, tau_u):
     tau_a = I@a_acc - np.cross(I@a_vel, a_vel) - tau_u
     return tau_a
 
-if __name__ == '__main__':
-    #parser = argparse.ArgumentParser()
-    #parser.add_argument("file_usd")
-    #args = parser.parse_args()
-    #data_usd = cfusdlog.decode(args.file_usd)
-    data_usd = cfusdlog.decode("hardware/data/jana01")
+def main(path, name):
+
+    data_usd = cfusdlog.decode(path)
     data = data_usd['fixedFrequency']
     start_time = data['timestamp'][0]
     I = MultirotorConfig.INERTIA
@@ -80,6 +76,10 @@ if __name__ == '__main__':
 
     f = np.array(f)
     tau = np.array(tau)
+
+    f_a_plot(data, f, name)
+    tau_a_plot(data, tau, name)
+
     # pred = np.array(pred)
     y = np.append(f, tau, axis = 1)
 
@@ -101,8 +101,15 @@ if __name__ == '__main__':
     # ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
     # plt.show()
     
-    residual_plot(data, f, tau)
+#    model.train_model(data, y)
 
-    model.train_model(data, y)
+if __name__ == '__main__':
+    for i in range(7):
+        path = f"hardware/data/jana0{i}"
+        name = f"jana0{i}"
+        main(path, name)
 
-
+    for i in range(10, 12):
+        path = f"hardware/data/jana{i}"
+        name = f'jana{i}'
+        main(path, name)

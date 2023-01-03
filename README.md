@@ -6,12 +6,12 @@ Python version 3.8.10
 
 ### Packages:
 
-Rowan 1.3.0
-Numpy 1.19.0
-sklearn 1.2.0
-matplotlib 3.6.2
-mplcursors 0.5.2
-torch 1.13.1
+* rowan 1.3.0
+* numpy 1.19.0
+* sklearn 1.2.0
+* matplotlib 3.6.2
+* mplcursors 0.5.2
+* torch 1.13.1
 
 ## Code
 
@@ -32,4 +32,4 @@ In the Config file are the values for the mass, inertia matrix, arms length and 
 
 ## Plots
 
-The folder pdf includes the plot of the loss of the training and the validation of the linear regression and an subfolder for each flight of the quadrotor. In each flight folder are a 3d plot of the trajectory, and five plots that compare the acceleration, the velocity, the angular velocity, the position and the quaternions. Additionally there is a subfolder with the name error, in there are the five plots that shows the error of the acceleration, the velocity, the angular velocity, the position and the quaternions.
+The folder pdf includes the plot of the loss of the training and the validation of the linear regression and an subfolder for each flight of the quadrotor. In each flight folder are a 3d plot of the trajectory, the calculated f_a and tau_a and five plots that compare the acceleration, the velocity, the angular velocity, the position and the quaternions. Additionally there is a subfolder with the name error, in there are the five plots that shows the error of the acceleration, the velocity, the angular velocity, the position and the quaternions.

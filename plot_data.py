@@ -17,7 +17,7 @@ def showAnnotation(data, sel):
 
 def plot_all(data):
     fig, ax = plt.subplots()
-    t = (data['timestamp'] - start_time) / 1000
+    t = (data['timestamp'] - data['timestamp'][0]) / 1000
     ax.scatter(t, t*0)
     ax.set_title('fixedFrequency')
     print(data.keys())
@@ -236,26 +236,34 @@ def error_position(data, err_pos, name):
     plt.savefig(f'pdf/{name}/error/error_position.pdf')
 
 
-def residual_plot(data, f, tau):
+def f_a_plot(data, f, name):
 
-    fig, ax = plt.subplots(2)
-    ax[0].plot(data['timestamp'][1:], f[:,0], '-', label='X')
-    ax[0].plot(data['timestamp'][1:], f[:,1], '-', label='Y')
-    ax[0].plot(data['timestamp'][1:], f[:,2], '-', label='Z')
-    ax[0].set_xlabel('timestamp [ms]')
-    ax[0].set_ylabel('f_a')
-    ax[0].set_title('f_a')
-    ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
+    fig, ax = plt.subplots()
+    ax.plot(data['timestamp'][1:], f[:,0], '-', label='X')
+    ax.plot(data['timestamp'][1:], f[:,1], '-', label='Y')
+    ax.plot(data['timestamp'][1:], f[:,2], '-', label='Z')
+    ax.set_xlabel('timestamp [ms]')
+    ax.set_ylabel('f_a')
+    ax.set_title('f_a')
+    ax.legend(loc=9, ncol=3, borderaxespad=0.)
 
-    ax[1].plot(data['timestamp'][1:], tau[:,0], '-', label='X')
-    ax[1].plot(data['timestamp'][1:], tau[:,1], '-', label='Y')
-    ax[1].plot(data['timestamp'][1:], tau[:,2], '-', label='Z')
-    ax[1].set_xlabel('timestamp [ms]')
-    ax[1].set_ylabel('tau_a_')
-    ax[1].set_title('tau_a')
+    ax.legend(loc=9, ncol=3, borderaxespad=0.)
+    plt.savefig(f'pdf/{name}/f_a.pdf')
 
-    ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
-    plt.savefig('pdf/tau_a and f_a.pdf')
+def tau_a_plot(data, tau, name):
+    fig, ax = plt.subplots()
+
+    ax.plot(data['timestamp'][1:], tau[:,0], '-', label='X')
+    ax.plot(data['timestamp'][1:], tau[:,1], '-', label='Y')
+    ax.plot(data['timestamp'][1:], tau[:,2], '-', label='Z')
+    ax.set_xlabel('timestamp [ms]')
+    ax.set_ylabel('tau_a_')
+    ax.set_title('tau_a')
+
+    ax.legend(loc=9, ncol=3, borderaxespad=0.)
+    plt.savefig(f'pdf/{name}/tau_a.pdf')
+
+
 
 
 def losses(train_losses, test_losses):

@@ -162,4 +162,3 @@ if __name__ == "__main__":
         path = f"hardware/data/jana{i}"
         name = f'jana{i}'
         main(path, name)
-        
