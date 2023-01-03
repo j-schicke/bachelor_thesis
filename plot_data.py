@@ -243,7 +243,7 @@ def f_a_plot(data, f, name):
     ax.plot(data['timestamp'][1:], f[:,1], '-', label='Y')
     ax.plot(data['timestamp'][1:], f[:,2], '-', label='Z')
     ax.set_xlabel('timestamp [ms]')
-    ax.set_ylabel('f_a')
+    ax.set_ylabel('N')
     ax.set_title('f_a')
     ax.legend(loc=9, ncol=3, borderaxespad=0.)
 
@@ -257,27 +257,11 @@ def tau_a_plot(data, tau, name):
     ax.plot(data['timestamp'][1:], tau[:,1], '-', label='Y')
     ax.plot(data['timestamp'][1:], tau[:,2], '-', label='Z')
     ax.set_xlabel('timestamp [ms]')
-    ax.set_ylabel('tau_a_')
+    ax.set_ylabel('rad/s²')
     ax.set_title('tau_a')
 
     ax.legend(loc=9, ncol=3, borderaxespad=0.)
     plt.savefig(f'pdf/{name}/tau_a.pdf')
-
-
-
-
-def losses(train_losses, test_losses):
-
-    fig, ax = plt.subplots()
-    ax.plot(range(len(train_losses)), train_losses, label = 'training')
-    ax.plot(range(len(test_losses)), test_losses, label = 'test')
-    ax.set_xlabel('batch')
-    ax.set_ylabel('loss')
-    ax.set_title('losses')
-
-    ax.legend(loc=9, ncol=3, borderaxespad=0.)
-
-    plt.savefig('pdf/losses.pdf')
 
 def errors(data, err_acc, err_vel, err_pos, err_vel_a, err_quaternions, name):
 
@@ -294,3 +278,74 @@ def compare_data(data, quaternions, acc, vel, vel_a, pos, name):
     compare_velocity(data, vel, name)
     compare_gyro(data,vel_a, name)
     compare_position(data, pos, name)
+
+def losses(train_losses, test_losses):
+
+    fig, ax = plt.subplots()
+    ax.plot(range(len(train_losses)), train_losses, label = 'training')
+    ax.plot(range(len(test_losses)), test_losses, label = 'test')
+    ax.set_xlabel('batch')
+    ax.set_ylabel('loss')
+    ax.set_title('losses')
+
+    ax.legend(loc=9, ncol=3, borderaxespad=0.)
+
+    plt.savefig('pdf/losses.pdf')
+
+def compare_predicted_f_a(data, f, pred, name):
+
+    fig, ax = plt.subplots(2)
+    ax[0].plot(data['timestamp'][1:], f[:,0], '-', label='X')
+    ax[0].plot(data['timestamp'][1:], f[:,1], '-', label='Y')
+    ax[0].plot(data['timestamp'][1:], f[:,2], '-', label='Z')
+    ax[0].set_xlabel('timestamp [ms]')
+    ax[0].set_ylabel('N')
+    ax[0].set_title('f_a')
+    ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    ax[1].plot(data['timestamp'][1:], pred[:,0], '-', label='X')
+    ax[1].plot(data['timestamp'][1:], pred[:,1], '-', label='Y')
+    ax[1].plot(data['timestamp'][1:], pred[:,2], '-', label='Z')
+    ax[1].set_xlabel('timestamp [ms]')
+    ax[1].set_ylabel('N')
+    ax[1].set_title('f predicted')
+    ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    plt.savefig(f'pdf/{name}/predicted_f_a.pdf')
+
+
+def compare_predicted_tau_a(data, tau, pred, name):
+
+    fig, ax = plt.subplots(2)
+    ax[0].plot(data['timestamp'][1:], tau[:,0], '-', label='X')
+    ax[0].plot(data['timestamp'][1:], tau[:,1], '-', label='Y')
+    ax[0].plot(data['timestamp'][1:], tau[:,2], '-', label='Z')
+    ax[0].set_xlabel('timestamp [ms]')
+    ax[0].set_ylabel('rad/s²')
+    ax[0].set_title('tau_a')
+    ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    ax[1].plot(data['timestamp'][1:], pred[:,3], '-', label='X')
+    ax[1].plot(data['timestamp'][1:], pred[:,4], '-', label='Y')
+    ax[1].plot(data['timestamp'][1:], pred[:,5], '-', label='Z')
+    ax[1].set_xlabel('timestamp [ms]')
+    ax[1].set_ylabel('rad/²')
+    ax[1].set_title('tau predicted')
+    ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    plt.savefig(f'pdf/{name}/predicted_tau_a.pdf')
+
+
+def losses(train_losses, test_losses):
+
+    fig, ax = plt.subplots()
+    ax.plot(range(len(train_losses)), train_losses, label = 'training')
+    ax.plot(range(len(test_losses)), test_losses, label = 'test')
+    ax.set_xlabel('batch')
+    ax.set_ylabel('loss')
+    ax.set_title('losses')
+
+    ax.legend(loc=9, ncol=3, borderaxespad=0.)
+
+    plt.savefig('pdf/losses.pdf')
+

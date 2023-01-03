@@ -7,7 +7,8 @@ import rowan
 from sklearn import preprocessing
 from model import NeuralNetwork
 from basis_forward_propagation import thrust_torque
-from plot_data import tau_a_plot, f_a_plot
+from plot_data import tau_a_plot, f_a_plot, compare_predicted_f_a, compare_predicted_tau_a
+import torch
 
 ms2s = MultirotorConfig.ms2s
 g = MultirotorConfig.GRAVITATION
@@ -25,12 +26,33 @@ def angular_acceleration(a_vel, prev_time, time):
 
 def disturbance_forces(m, acc, R, f_u):
     g_m = np.array([0,0,-g])
-    f_a = m*(acc-np.array([0,0,g]))  - m*g_m - R@f_u
+    f_a = m*(acc-np.array([0,0,g])) - m*g_m - R@f_u
     return f_a
 
 def disturbance_torques(a_acc, a_vel, tau_u):
     tau_a = I@a_acc - np.cross(I@a_vel, a_vel) - tau_u
     return tau_a
+
+def model_predict_train(data, f, tau,  training = False):
+    model = NeuralNetwork()
+    model.double()
+    if training:
+        y = np.append(f, tau, axis = 1)
+        model.train_model(data, y)
+    else:
+
+        model.load_state_dict(torch.load('model_1.pth'))
+        pred = []
+
+        for i in range(1,len(data['timestamp'])):
+            X = np.array(tuple(data.values()) ).T[i][1:]
+            X = preprocessing.normalize(X[None])[0]
+            X = torch.from_numpy(X) 
+            pred.append(model(X).cpu().detach().numpy())
+
+        pred = np.array(pred)
+        compare_predicted_f_a(data, f, pred, name)
+        compare_predicted_tau_a(data, tau, pred, name)
 
 def main(path, name):
 
@@ -49,10 +71,6 @@ def main(path, name):
     pwm_3 = preprocessing.normalize(data['pwm.m3_pwm'][None])[0]
     pwm_4 =preprocessing.normalize(data['pwm.m4_pwm'][None])[0]
     mv = preprocessing.normalize(data['pm.vbatMV'][None])[0]
-    model = NeuralNetwork()
-    model.double()
-    # model.load_state_dict(torch.load('model_1.pth'))
-    # pred = []
 
     for i in range(1,len(data['timestamp'])):
         time = data['timestamp'][i]
@@ -65,10 +83,6 @@ def main(path, name):
         f_u = np.array([0,0, u[0]])
         f_a = disturbance_forces(m, acc, R, f_u)
         f.append(f_a)
-        # X = np.array(tuple(data.values()) ).T[i][1:]
-        # X = preprocessing.normalize(X[None])[0]
-        # X = torch.from_numpy(X) 
-        # pred.append(model(X).cpu().detach().numpy())
         tau_u = np.array([u[1], u[2], u[3]])
         tau_a = disturbance_torques(a_acc, a_vel, tau_u)
         tau.append(tau_a)
@@ -80,36 +94,14 @@ def main(path, name):
     f_a_plot(data, f, name)
     tau_a_plot(data, tau, name)
 
-    # pred = np.array(pred)
-    y = np.append(f, tau, axis = 1)
-
-    # fig, ax = plt.subplots(2)
-    # ax[0].plot(data['timestamp'][1:], tau[:,0], '-', label='X')
-    # ax[0].plot(data['timestamp'][1:], tau[:,1], '-', label='Y')
-    # ax[0].plot(data['timestamp'][1:], tau[:,2], '-', label='Z')
-    # ax[0].set_xlabel('timestamp [ms]')
-    # ax[0].set_ylabel('f_a')
-    # ax[0].set_title('f_a')
-    # ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
-
-    # ax[1].plot(data['timestamp'][1:], pred[:,3], '-', label='X')
-    # ax[1].plot(data['timestamp'][1:], pred[:,4], '-', label='Y')
-    # ax[1].plot(data['timestamp'][1:], pred[:,5], '-', label='Z')
-    # ax[1].set_xlabel('timestamp [ms]')
-    # ax[1].set_ylabel('f_p')
-    # ax[1].set_title('f predicted')
-    # ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
-    # plt.show()
+    return data, f, tau
     
-#    model.train_model(data, y)
-
 if __name__ == '__main__':
-    for i in range(7):
-        path = f"hardware/data/jana0{i}"
-        name = f"jana0{i}"
-        main(path, name)
 
-    for i in range(10, 12):
-        path = f"hardware/data/jana{i}"
-        name = f'jana{i}'
-        main(path, name)
+    path = f"hardware/data/jana00"
+    name = f"jana00"
+    data, f_a, tau_a, = main(path, name)
+
+    model_predict_train(data, f_a, tau_a)
+
+    
