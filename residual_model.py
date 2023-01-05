@@ -7,7 +7,7 @@ import rowan
 from sklearn import preprocessing
 from model import NeuralNetwork
 from basis_forward_propagation import thrust_torque
-from plot_data import tau_a_plot, f_a_plot, compare_predicted_f_a, compare_predicted_tau_a
+from plot_data import tau_a_plot, f_a_plot, compare_predicted_f_a, compare_predicted_tau_a, error_pred_f, error_pred_tau
 import torch
 
 ms2s = MultirotorConfig.ms2s
@@ -53,6 +53,9 @@ def model_predict_train(data, f, tau,  training = False):
         pred = np.array(pred)
         compare_predicted_f_a(data, f, pred, name)
         compare_predicted_tau_a(data, tau, pred, name)
+        error_pred_f(data, f, pred, name)
+        error_pred_tau(data, tau, pred, name)
+
 
 def main(path, name):
 
@@ -98,10 +101,20 @@ def main(path, name):
     
 if __name__ == '__main__':
 
-    path = f"hardware/data/jana00"
-    name = f"jana00"
-    data, f_a, tau_a, = main(path, name)
+    for i in range(7):
+        path = f'hardware/data/jana0{i}'
+        name = f'jana0{i}'
+        main(path, name)
 
-    model_predict_train(data, f_a, tau_a, training= False)
+    for i in range(10, 12):
+        path = f'hardware/data/jana{i}'
+        name = f'jana{i}'
+        main(path, name)
+
+    # path = f"hardware/data/jana00"
+    # name = f"jana00"
+    # data, f_a, tau_a, = main(path, name)
+
+    # model_predict_train(data, f_a, tau_a, training= False)
 
     

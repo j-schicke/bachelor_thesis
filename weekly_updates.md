@@ -1,6 +1,16 @@
 Meetings:
+06.01-12.01:
 
-30.12-05.01.
+progress:
+- add 1 g-unit to data acceleration
+- wrote Read Me file
+- plot avg. loss, compare pred and calculated f_a, tau_a
+- add tau_a to the model prediction
+
+
+
+
+30.12-05.01:
 
 progress:
 - plot test and trainings loss <br  />

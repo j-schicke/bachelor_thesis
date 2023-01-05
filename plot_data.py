@@ -238,29 +238,63 @@ def error_position(data, err_pos, name):
 
 def f_a_plot(data, f, name):
 
-    fig, ax = plt.subplots()
-    ax.plot(data['timestamp'][1:], f[:,0], '-', label='X')
-    ax.plot(data['timestamp'][1:], f[:,1], '-', label='Y')
-    ax.plot(data['timestamp'][1:], f[:,2], '-', label='Z')
-    ax.set_xlabel('timestamp [ms]')
-    ax.set_ylabel('N')
-    ax.set_title('f_a')
-    ax.legend(loc=9, ncol=3, borderaxespad=0.)
+    # fig, ax = plt.subplots()
+    # ax.plot(data['timestamp'][1:], f[:,0], '-', label='X')
+    # ax.plot(data['timestamp'][1:], f[:,1], '-', label='Y')
+    # ax.plot(data['timestamp'][1:], f[:,2], '-', label='Z')
+    # ax.set_xlabel('timestamp [ms]')
+    # ax.set_ylabel('N')
+    # ax.set_title('f_a')
 
-    ax.legend(loc=9, ncol=3, borderaxespad=0.)
+    fig, ax = plt.subplots(3)
+    ax[0].plot(data['timestamp'][1:], f[:,0], '-')
+    ax[0].set_xlabel('timestamp [ms]')
+    ax[0].set_ylabel('N')
+    ax[0].set_title('f_a X')
+
+
+    ax[1].plot(data['timestamp'][1:], f[:,1], '-', label='Y')
+    ax[1].set_xlabel('timestamp [ms]')
+    ax[1].set_ylabel('N')
+    ax[1].set_title('f_a Y')
+
+    
+    ax[2].plot(data['timestamp'][1:], f[:,2], '-', label='Z')
+    ax[2].set_xlabel('timestamp [ms]')
+    ax[2].set_ylabel('N')
+    ax[2].set_title('f_a Z')
+
+
     plt.savefig(f'pdf/{name}/f_a.pdf')
 
 def tau_a_plot(data, tau, name):
-    fig, ax = plt.subplots()
+    #fig, ax = plt.subplots()
 
-    ax.plot(data['timestamp'][1:], tau[:,0], '-', label='X')
-    ax.plot(data['timestamp'][1:], tau[:,1], '-', label='Y')
-    ax.plot(data['timestamp'][1:], tau[:,2], '-', label='Z')
-    ax.set_xlabel('timestamp [ms]')
-    ax.set_ylabel('rad/s²')
-    ax.set_title('tau_a')
+    # ax.plot(data['timestamp'][1:], tau[:,0], '-', label='X')
+    # ax.plot(data['timestamp'][1:], tau[:,1], '-', label='Y')
+    # ax.plot(data['timestamp'][1:], tau[:,2], '-', label='Z')
+    # ax.set_xlabel('timestamp [ms]')
+    # ax.set_ylabel('rad/s²')
+    # ax.set_title('tau_a')
 
-    ax.legend(loc=9, ncol=3, borderaxespad=0.)
+    fig, ax = plt.subplots(3)
+    ax[0].plot(data['timestamp'][1:], tau[:,0], '-')
+    ax[0].set_xlabel('timestamp [ms]')
+    ax[0].set_ylabel('rad/s²')
+    ax[0].set_title('tau_a X')
+
+
+    ax[1].plot(data['timestamp'][1:], tau[:,1], '-', label='Y')
+    ax[1].set_xlabel('timestamp [ms]')
+    ax[1].set_ylabel('rad/s²')
+    ax[1].set_title('tau_a Y')
+
+    
+    ax[2].plot(data['timestamp'][1:], tau[:,2], '-', label='Z')
+    ax[2].set_xlabel('timestamp [ms]')
+    ax[2].set_ylabel('rad/s²')
+    ax[2].set_title('tau_a Z')
+
     plt.savefig(f'pdf/{name}/tau_a.pdf')
 
 def errors(data, err_acc, err_vel, err_pos, err_vel_a, err_quaternions, name):
@@ -329,7 +363,7 @@ def compare_predicted_tau_a(data, tau, pred, name):
     ax[1].plot(data['timestamp'][1:], pred[:,4], '-', label='Y')
     ax[1].plot(data['timestamp'][1:], pred[:,5], '-', label='Z')
     ax[1].set_xlabel('timestamp [ms]')
-    ax[1].set_ylabel('rad/²')
+    ax[1].set_ylabel('rad/s²')
     ax[1].set_title('tau predicted')
     ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
 
@@ -348,4 +382,36 @@ def losses(train_losses, test_losses):
     ax.legend(loc=9, ncol=3, borderaxespad=0.)
 
     plt.savefig('pdf/losses.pdf')
+
+def error_pred_f(data, f, pred, name):
+
+    err_f = f - pred[:,:3]
+
+    fig, ax = plt.subplots()
+    ax.plot(data['timestamp'][1:], err_f[:,0], '-', label='X')
+    ax.plot(data['timestamp'][1:], err_f[:,1], '-', label='Y')
+    ax.plot(data['timestamp'][1:], err_f[:,2], '-', label='Z')
+
+    ax.set_xlabel('timestamp [ms]')
+    ax.set_ylabel('error')
+    ax.set_title('error of the prediction f')
+
+    ax.legend(loc=9, ncol=3, borderaxespad=0.)
+    plt.savefig(f'pdf/{name}/error/error_f_a.pdf')
+
+def error_pred_tau(data, tau, pred, name):
+
+    err_tau = tau-pred[:,3:]
+
+    fig, ax = plt.subplots()
+    ax.plot(data['timestamp'][1:], err_tau[:,0], '-', label='X')
+    ax.plot(data['timestamp'][1:], err_tau[:,1], '-', label='Y')
+    ax.plot(data['timestamp'][1:], err_tau[:,2], '-', label='Z')
+
+    ax.set_xlabel('timestamp [ms]')
+    ax.set_ylabel('error')
+    ax.set_title('error of the prediction tau')
+
+    ax.legend(loc=9, ncol=3, borderaxespad=0.)
+    plt.savefig(f'pdf/{name}/error/error_tau_a.pdf')
 
