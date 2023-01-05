@@ -102,6 +102,6 @@ if __name__ == '__main__':
     name = f"jana00"
     data, f_a, tau_a, = main(path, name)
 
-    #model_predict_train(data, f_a, tau_a, training= True)
+    model_predict_train(data, f_a, tau_a, training= False)
 
     

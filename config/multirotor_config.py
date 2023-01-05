@@ -14,8 +14,3 @@ class MultirotorConfig:
     ms2g = 0.101972 #m/s² to g-unit
     g2N = 0.00981 #grams to Newton
     t2t = 0.006  # thrust-to-torque ratio
-
-
-
-
-    

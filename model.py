@@ -8,15 +8,17 @@ from plot_data import losses
 
 
 class NeuralNetwork(nn.Module):
-    def __init__(self, input_size = 25, hidden_size = 15, output_size = 6):
+    def __init__(self, input_size = 25, hidden_size = [19, 13], output_size = 6):
         super(NeuralNetwork, self).__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.output_size = output_size
         self.linear_relu = nn.Sequential(
-            nn.Linear(self.input_size, self.hidden_size),
+            nn.Linear(self.input_size, self.hidden_size[0]),
             nn.ReLU(),
-            nn.Linear(self.hidden_size, self.output_size)
+            nn.Linear(self.hidden_size[0], self.hidden_size[1]),
+            nn.ReLU(),
+            nn.Linear(self.hidden_size[1], self.output_size)
 
         )
     def forward(self, x):
@@ -58,12 +60,14 @@ class NeuralNetwork(nn.Module):
         del data['timestamp']
         X = np.array(tuple(data.values()) ).T[:-1]
         y = np.array(y)
-        X = preprocessing.normalize(X)
+        #X = preprocessing.normalize(X)
 
         X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state= 13)
 
+        X_train = preprocessing.normalize(X_train)
         X_train = torch.from_numpy(X_train) 
         
+        X_test = preprocessing.normalize(X_test)
         X_test = torch.from_numpy(X_test)
 
         y_train = torch.from_numpy(y_train)

@@ -154,11 +154,11 @@ def main(path,name):
 
 if __name__ == "__main__":
     for i in range(7):
-        path = f"hardware/data/jana0{i}"
-        name = f"jana0{i}"
+        path = f'hardware/data/jana0{i}'
+        name = f'jana0{i}'
         main(path, name)
 
     for i in range(10, 12):
-        path = f"hardware/data/jana{i}"
+        path = f'hardware/data/jana{i}'
         name = f'jana{i}'
         main(path, name)
