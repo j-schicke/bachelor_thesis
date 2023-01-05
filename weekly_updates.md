@@ -8,7 +8,8 @@ progress:
 - add tau_a to the model prediction
 
 
-
+discussion:
+- what should I do now with the 3rd value of f_a?
 
 30.12-05.01:
 
