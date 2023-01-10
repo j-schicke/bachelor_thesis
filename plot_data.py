@@ -29,45 +29,59 @@ def plot_all(data):
 
 def compare_gyro(data, vel_a, name):
 
-    fig,ax = plt.subplots(2)
+    fig,ax = plt.subplots(3)
 
-    ax[0].plot(data['timestamp'], data['gyro.x'], '-', label='X')
-    ax[0].plot(data['timestamp'], data['gyro.y'], '-', label='Y')
-    ax[0].plot(data['timestamp'], data['gyro.z'], '-', label='Z')
+    ax[0].plot(data['timestamp'], data['gyro.x'], '-', label='data')
+    ax[0].plot(data['timestamp'], vel_a[:,0], '-', label='propagated')
     ax[0].set_xlabel('timestamp [ms]')
     ax[0].set_ylabel('Gyroscope [°/s]')
-    ax[0].set_title('data angular_velocity')
+    ax[0].set_title('angular_velocity X')
     ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
 
-    ax[1].plot(data['timestamp'], vel_a[:,0], '-', label='X')
-    ax[1].plot(data['timestamp'], vel_a[:,1], '-', label='Y')
-    ax[1].plot(data['timestamp'], vel_a[:,2], '-', label='Z')
+
+
+    ax[1].plot(data['timestamp'], data['gyro.y'], '-', label='data')
+    ax[1].plot(data['timestamp'], vel_a[:,1], '-', label='propagated')
     ax[1].set_xlabel('timestamp [ms]')
     ax[1].set_ylabel('Gyroscope [°/s]')
-    ax[1].set_title('output angular_velocity')
+    ax[1].set_title('angular_velocity Y')
     ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
+
+
+    ax[2].plot(data['timestamp'], data['gyro.z'], '-', label='data')
+    ax[2].plot(data['timestamp'], vel_a[:,2], '-', label='propagated')
+    ax[2].set_xlabel('timestamp [ms]')
+    ax[2].set_ylabel('Gyroscope [°/s]')
+    ax[2].set_title('angular_velocity Z')
+    ax[2].legend(loc=9, ncol=3, borderaxespad=0.)
 
     plt.savefig(f'pdf/{name}/angular_velocity.pdf')  
 
 def compare_position(data, pos, name):
 
-    fig,ax = plt.subplots(2)
+    fig,ax = plt.subplots(3)
 
-    ax[0].plot(data['timestamp'], data['stateEstimate.x'], '-', label='X')
-    ax[0].plot(data['timestamp'], data['stateEstimate.y'], '-', label='Y')
-    ax[0].plot(data['timestamp'], data['stateEstimate.z'], '-', label='Z')
+    ax[0].plot(data['timestamp'], data['stateEstimate.x'], '-', label='data')
+    ax[0].plot(data['timestamp'], pos[:,0], '-', label='propagated')
     ax[0].set_xlabel('timestamp [ms]')
     ax[0].set_ylabel('position')
-    ax[0].set_title('data position')
+    ax[0].set_title('position X')
     ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
 
-    ax[1].plot(data['timestamp'], pos[:,0], '-', label='X')
-    ax[1].plot(data['timestamp'], pos[:,1], '-', label='Y')
-    ax[1].plot(data['timestamp'], pos[:,2], '-', label='Z')
+
+    ax[1].plot(data['timestamp'], data['stateEstimate.y'], '-', label='data')
+    ax[1].plot(data['timestamp'], pos[:,1], '-', label='propagated')
     ax[1].set_xlabel('timestamp [ms]')
     ax[1].set_ylabel('position')
-    ax[1].set_title('output position')
+    ax[1].set_title('position Y')
     ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    ax[2].plot(data['timestamp'], data['stateEstimate.z'], '-', label='data')
+    ax[2].plot(data['timestamp'], pos[:,2], '-', label='propagated')
+    ax[2].set_xlabel('timestamp [ms]')
+    ax[2].set_ylabel('position')
+    ax[2].set_title('position Z')
+    ax[2].legend(loc=9, ncol=3, borderaxespad=0.)
 
     plt.savefig(f'pdf/{name}/position.pdf')  
 
@@ -90,23 +104,28 @@ def trajectory(data, name):
 
 def compare_velocity(data, vel, name):
 
-    fig,ax = plt.subplots(2)
+    fig,ax = plt.subplots(3)
 
-    ax[0].plot(data['timestamp'], data['stateEstimate.vx'], '-', label='X')
-    ax[0].plot(data['timestamp'], data['stateEstimate.vy'], '-', label='Y')
-    ax[0].plot(data['timestamp'], data['stateEstimate.vz'], '-', label='Z')
+    ax[0].plot(data['timestamp'], data['stateEstimate.vx'], '-', label='data')
+    ax[0].plot(data['timestamp'], vel[:,0], '-', label='propagate')
     ax[0].set_xlabel('timestamp [ms]')
     ax[0].set_ylabel('velocity [m/s]')
-    ax[0].set_title('data velocity')
+    ax[0].set_title('velocity X')
     ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
 
-    ax[1].plot(data['timestamp'], vel[:,0], '-', label='X')
-    ax[1].plot(data['timestamp'], vel[:,1], '-', label='Y')
-    ax[1].plot(data['timestamp'], vel[:,2], '-', label='Z')
+    ax[1].plot(data['timestamp'], data['stateEstimate.vy'], '-', label='data')
+    ax[1].plot(data['timestamp'], vel[:,1], '-', label='propagate')
     ax[1].set_xlabel('timestamp [ms]')
     ax[1].set_ylabel('velocity [m/s]')
-    ax[1].set_title('output velocity')
+    ax[1].set_title('velocity Y')
     ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    ax[2].plot(data['timestamp'], data['stateEstimate.vz'], '-', label='data')
+    ax[2].plot(data['timestamp'], vel[:,2], '-', label='propagate')
+    ax[2].set_xlabel('timestamp [ms]')
+    ax[2].set_ylabel('velocity [m/s]')
+    ax[2].set_title('velocity Z')
+    ax[2].legend(loc=9, ncol=3, borderaxespad=0.)
 
     plt.savefig(f'pdf/{name}/velocity.pdf')  
 
@@ -126,25 +145,36 @@ def rpm(data):
 
 def compare_quaternions(data, quaternions, name):
 
-    fig, ax = plt.subplots(2)
+    fig, ax = plt.subplots(4)
 
-    ax[0].plot(data['timestamp'], data['stateEstimate.qw'], '-', label='W')
-    ax[0].plot(data['timestamp'], data['stateEstimate.qx'], '-', label='X')
-    ax[0].plot(data['timestamp'], data['stateEstimate.qy'], '-', label='Y')
-    ax[0].plot(data['timestamp'], data['stateEstimate.qz'], '-', label='Z')
+    ax[0].plot(data['timestamp'], data['stateEstimate.qw'], '-', label='data')
+    ax[0].plot(data['timestamp'], quaternions[:,0], '-', label='propagate')
     ax[0].set_xlabel('timestamp [ms]')
     ax[0].set_ylabel('quaternions')
-    ax[0].set_title('data quaternions')
+    ax[0].set_title('quaternions W')
     ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
 
-    ax[1].plot(data['timestamp'], quaternions[:,0], '-', label='W')
-    ax[1].plot(data['timestamp'], quaternions[:,1], '-', label='X')
-    ax[1].plot(data['timestamp'], quaternions[:,2], '-', label='Y')
-    ax[1].plot(data['timestamp'], quaternions[:,3], '-', label='Z')
+    ax[1].plot(data['timestamp'], data['stateEstimate.qx'], '-', label='data')
+    ax[1].plot(data['timestamp'], quaternions[:,1], '-', label='propagate')
     ax[1].set_xlabel('timestamp [ms]')
     ax[1].set_ylabel('quaternions')
-    ax[1].set_title('output quaternions')
+    ax[1].set_title('quaternions X')
     ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    ax[2].plot(data['timestamp'], data['stateEstimate.qy'], '-', label='data')
+    ax[2].plot(data['timestamp'], quaternions[:,2], '-', label='propagate')
+    ax[2].set_xlabel('timestamp [ms]')
+    ax[2].set_ylabel('quaternions')
+    ax[2].set_title('quaternions Y')
+    ax[2].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    ax[3].plot(data['timestamp'], data['stateEstimate.qz'], '-', label='data')
+    ax[3].plot(data['timestamp'], quaternions[:,3], '-', label='propagate')
+    ax[3].set_xlabel('timestamp [ms]')
+    ax[3].set_ylabel('quaternions')
+    ax[3].set_title('quaternions Z')
+    ax[3].legend(loc=9, ncol=3, borderaxespad=0.)
+
 
     plt.savefig(f'pdf/{name}/quaternions.pdf')  
 
@@ -152,22 +182,31 @@ def compare_quaternions(data, quaternions, name):
 
 def compare_acceleration(data, acc, name):
 
-    fig,ax = plt.subplots(2)
-    ax[0].plot(data['timestamp'], data['acc.x'], '-', label='X')
-    ax[0].plot(data['timestamp'], data['acc.y'], '-', label='Y')
-    ax[0].plot(data['timestamp'], data['acc.z'], '-', label='Z')
+    fig,ax = plt.subplots(3)
+
+    ax[0].plot(data['timestamp'], data['acc.x'], '-', label='data')
+    ax[0].plot(data['timestamp'], acc[:,0], '-', label='propagate')
     ax[0].set_xlabel('timestamp [ms]')
     ax[0].set_ylabel('acceleration [g]')
-    ax[0].set_title('data acceleration')
+    ax[0].set_title('acceleration X')
     ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
 
-    ax[1].plot(data['timestamp'], acc[:,0], '-', label='X')
-    ax[1].plot(data['timestamp'], acc[:,1], '-', label='Y')
-    ax[1].plot(data['timestamp'], acc[:,2], '-', label='Z')
+
+    ax[1].plot(data['timestamp'], data['acc.y'], '-', label='data')
+    ax[1].plot(data['timestamp'], acc[:,1], '-', label='propagate')
     ax[1].set_xlabel('timestamp [ms]')
     ax[1].set_ylabel('acceleration [g]')
-    ax[1].set_title('output acceleration')
+    ax[1].set_title('acceleration Y')
     ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
+
+
+    ax[2].plot(data['timestamp'], data['acc.z'], '-', label='data')
+    ax[2].plot(data['timestamp'], acc[:,2], '-', label='propagate')
+    ax[2].set_xlabel('timestamp [ms]')
+    ax[2].set_ylabel('acceleration [g]')
+    ax[2].set_title('acceleration Z')
+    ax[2].legend(loc=9, ncol=3, borderaxespad=0.)
+
 
     plt.savefig(f'pdf/{name}/acceleration.pdf')
 
@@ -328,44 +367,56 @@ def losses(train_losses, test_losses):
 
 def compare_predicted_f_a(data, f, pred, name):
 
-    fig, ax = plt.subplots(2)
-    ax[0].plot(data['timestamp'][1:], f[:,0], '-', label='X')
-    ax[0].plot(data['timestamp'][1:], f[:,1], '-', label='Y')
-    ax[0].plot(data['timestamp'][1:], f[:,2], '-', label='Z')
+    fig, ax = plt.subplots(3)
+
+    ax[0].plot(data['timestamp'][1:], f[:,0], '-', label='calculated')
+    ax[0].plot(data['timestamp'][1:], pred[:,0], '-', label='predicted')
     ax[0].set_xlabel('timestamp [ms]')
     ax[0].set_ylabel('N')
-    ax[0].set_title('f_a')
+    ax[0].set_title('Disturbance Forces X')
     ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
 
-    ax[1].plot(data['timestamp'][1:], pred[:,0], '-', label='X')
-    ax[1].plot(data['timestamp'][1:], pred[:,1], '-', label='Y')
-    ax[1].plot(data['timestamp'][1:], pred[:,2], '-', label='Z')
+    ax[1].plot(data['timestamp'][1:], f[:,1], '-', label='calculated')
+    ax[1].plot(data['timestamp'][1:], pred[:,1], '-', label='predicted')
     ax[1].set_xlabel('timestamp [ms]')
     ax[1].set_ylabel('N')
-    ax[1].set_title('f predicted')
+    ax[1].set_title('Disturbance Forces Y')
     ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
+
+
+    ax[2].plot(data['timestamp'][1:], f[:,2], '-', label='calculated')
+    ax[2].plot(data['timestamp'][1:], pred[:,2], '-', label='predicted')
+    ax[2].set_xlabel('timestamp [ms]')
+    ax[2].set_ylabel('N')
+    ax[2].set_title('Disturbance Forces Z')
+    ax[2].legend(loc=9, ncol=3, borderaxespad=0.)
+
 
     plt.savefig(f'pdf/{name}/predicted_f_a.pdf')
 
-
 def compare_predicted_tau_a(data, tau, pred, name):
 
-    fig, ax = plt.subplots(2)
-    ax[0].plot(data['timestamp'][1:], tau[:,0], '-', label='X')
-    ax[0].plot(data['timestamp'][1:], tau[:,1], '-', label='Y')
-    ax[0].plot(data['timestamp'][1:], tau[:,2], '-', label='Z')
+    fig, ax = plt.subplots(3)
+    ax[0].plot(data['timestamp'][1:], tau[:,0], '-', label='calculated')
+    ax[0].plot(data['timestamp'][1:], pred[:,3], '-', label='predicted')
     ax[0].set_xlabel('timestamp [ms]')
     ax[0].set_ylabel('rad/s²')
-    ax[0].set_title('tau_a')
+    ax[0].set_title('Disturbance Torques X')
     ax[0].legend(loc=9, ncol=3, borderaxespad=0.)
-
-    ax[1].plot(data['timestamp'][1:], pred[:,3], '-', label='X')
-    ax[1].plot(data['timestamp'][1:], pred[:,4], '-', label='Y')
-    ax[1].plot(data['timestamp'][1:], pred[:,5], '-', label='Z')
+    
+    ax[1].plot(data['timestamp'][1:], tau[:,1], '-', label='calculated')
+    ax[1].plot(data['timestamp'][1:], pred[:,4], '-', label='predicted')
     ax[1].set_xlabel('timestamp [ms]')
     ax[1].set_ylabel('rad/s²')
-    ax[1].set_title('tau predicted')
+    ax[1].set_title('Disturbance Torques Y')
     ax[1].legend(loc=9, ncol=3, borderaxespad=0.)
+
+    ax[2].plot(data['timestamp'][1:], tau[:,2], '-', label='calculated')
+    ax[2].plot(data['timestamp'][1:], pred[:,5], '-', label='predicted')
+    ax[2].set_xlabel('timestamp [ms]')
+    ax[2].set_ylabel('rad/s²')
+    ax[2].set_title('Disturbance Torques Z')
+    ax[2].legend(loc=9, ncol=3, borderaxespad=0.)
 
     plt.savefig(f'pdf/{name}/predicted_tau_a.pdf')
 
@@ -414,4 +465,3 @@ def error_pred_tau(data, tau, pred, name):
 
     ax.legend(loc=9, ncol=3, borderaxespad=0.)
     plt.savefig(f'pdf/{name}/error/error_tau_a.pdf')
-
