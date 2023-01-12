@@ -9,7 +9,7 @@ d2r = MultirotorConfig.deg2rad
 
 
 class NeuralNetwork(nn.Module):
-    def __init__(self, input_size = 6, hidden_size = 5, output_size = 6):
+    def __init__(self, input_size = 6, hidden_size = 6, output_size = 6):
         super(NeuralNetwork, self).__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size

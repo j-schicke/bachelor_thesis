@@ -13,6 +13,9 @@ progress:
 
 <img src = 'pdf/Angular Velocity Jana 00.png'  width="200">
 
+discussion:
+- What can I do to imporve the model? (I try changing the lr and the hidden size)
+
 
 06.01-12.01:
 
