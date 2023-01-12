@@ -1,4 +1,19 @@
 Meetings:
+
+13.01-19.01:
+
+progress:
+- change the input of the model to 6 inputs, changed the optimizier to Adam and I don't normalize the data anymore
+
+<img src = 'pdf/f_a.png' width = '200'>
+<img src = 'pdf/tau_a.png' width = '200'>
+
+
+- plots now has the label on the side and the title doesn't overlab with the plot anymore
+
+<img src = 'pdf/Angular Velocity Jana 00.png'  width="200">
+
+
 06.01-12.01:
 
 progress:

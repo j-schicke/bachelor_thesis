@@ -45,7 +45,7 @@ def model_predict_train(data, f, tau,  training = False):
         pred = []
 
         for i in range(1,len(data['timestamp'])):
-            X = np.array([data['stateEstimate.vx'], data['stateEstimate.vy'], data['stateEstimate.vz'], data['gyro.x'], data['gyro.y'],data['gyro.z']]).T[i]            
+            X = np.array([data['stateEstimate.vx'], data['stateEstimate.vy'], data['stateEstimate.vz'], data['gyro.x']*d2r, data['gyro.y']*d2r,data['gyro.z']*d2r]).T[i]            
             #X = preprocessing.normalize(X[None])[0]
             X = torch.from_numpy(X) 
             pred.append(model(X).cpu().detach().numpy())
@@ -105,5 +105,5 @@ if __name__ == '__main__':
     name = f"jana00"
     data, f_a, tau_a, = main(path, name)
 
-    # model_predict_train(data, f_a, tau_a, training = True)
+    model_predict_train(data, f_a, tau_a, training = True)
     model_predict_train(data, f_a, tau_a, training = False)

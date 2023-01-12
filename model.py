@@ -2,9 +2,10 @@ import torch
 from torch import nn
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn import preprocessing
 from plot_data import losses
+from config.multirotor_config import MultirotorConfig
 
+d2r = MultirotorConfig.deg2rad
 
 
 class NeuralNetwork(nn.Module):
@@ -55,7 +56,7 @@ class NeuralNetwork(nn.Module):
 
 
     def train_model(self, data, y):
-        X = np.array([data['stateEstimate.vx'], data['stateEstimate.vy'], data['stateEstimate.vz'], data['gyro.x'], data['gyro.y'],data['gyro.z']])
+        X = np.array([data['stateEstimate.vx'], data['stateEstimate.vy'], data['stateEstimate.vz'], data['gyro.x']*d2r, data['gyro.y']*d2r,data['gyro.z']*d2r])
         X = X.T[1:]
         y = np.array(y)
 
@@ -68,7 +69,7 @@ class NeuralNetwork(nn.Module):
         y_test = torch.from_numpy(y_test)
 
         self.double()
-        epos = 50
+        epos = 25
         loss_fn = nn.MSELoss()
         optimizer = torch.optim.Adam(self.parameters(), lr =0.001)
         train_losses = []
