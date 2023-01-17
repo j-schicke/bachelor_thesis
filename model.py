@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+from torch.nn.utils.parametrizations import spectral_norm
 import numpy as np
 from sklearn.model_selection import train_test_split
 from plot_data import losses
@@ -11,13 +12,14 @@ d2r = MultirotorConfig.deg2rad
 class NeuralNetwork(nn.Module):
     def __init__(self, input_size = 6, hidden_size = 6, output_size = 6):
         super(NeuralNetwork, self).__init__()
+        
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.output_size = output_size
         self.linear_relu = nn.Sequential(
-            nn.Linear(self.input_size, self.hidden_size),
+            spectral_norm(nn.Linear(self.input_size, self.hidden_size), n_power_iterations = 2),
             nn.ReLU(),
-            nn.Linear(self.hidden_size, self.output_size)
+            spectral_norm(nn.Linear(self.hidden_size, self.output_size),n_power_iterations = 2)
 
         )
     def forward(self, x):
