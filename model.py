@@ -4,13 +4,15 @@ from torch.nn.utils.parametrizations import spectral_norm
 import numpy as np
 from sklearn.model_selection import train_test_split
 from plot_data import losses
+from basis_forward_propagation import decode_data
 from config.multirotor_config import MultirotorConfig
-
+from residual_calculation import residual
+import rowan
 d2r = MultirotorConfig.deg2rad
 
 
 class NeuralNetwork(nn.Module):
-    def __init__(self, input_size = 6, hidden_size = 6, output_size = 6):
+    def __init__(self, input_size = 12, hidden_size = 6, output_size = 6):
         super(NeuralNetwork, self).__init__()
         
         self.input_size = input_size
@@ -32,8 +34,10 @@ class NeuralNetwork(nn.Module):
         for i in range(len(y)):
             
             optimizer.zero_grad()
-            pred = self.forward(X[i]) 
-            loss = loss_fn(pred, y[i] )
+            tmp = X[:,i]
+            ys = y[:,i]
+            pred = self.forward(X[:,i]) 
+            loss = loss_fn(pred, y[:,i] )
 
             loss.backward()
             optimizer.step()
@@ -57,28 +61,58 @@ class NeuralNetwork(nn.Module):
         return avg_test
 
 
-    def train_model(self, data, y):
-        X = np.array([data['stateEstimate.vx'], data['stateEstimate.vy'], data['stateEstimate.vz'], data['gyro.x']*d2r, data['gyro.y']*d2r,data['gyro.z']*d2r])
-        X = X.T[1:]
-        y = np.array(y)
+    def train_model(self):
+        X = np.array([])
+        y = np.array([])
 
+        for i in ['00','02', '04', '06','10']:
+
+            data = decode_data(f"hardware/data/jana{i}")
+            r = np.array([])
+            for j in range(1,len(data['timestamp'])):
+
+                R = rowan.to_matrix(np.array([data['stateEstimate.qw'][j],data['stateEstimate.qx'][j], data['stateEstimate.qy'][j], data['stateEstimate.qz'][j]]))[:,:2]
+                R = R.reshape(1, 6)
+                if len(r) == 0:
+                    r = R
+                else:
+                    r = np.append(r, R, axis=0)
+
+
+            k = np.array([data['stateEstimate.vx'][1:], data['stateEstimate.vy'][1:], data['stateEstimate.vz'][1:], data['gyro.x'][1:]*d2r, data['gyro.y'][1:]*d2r,data['gyro.z'][1:]*d2r])
+            k = np.append(k, r.T, axis = 0)
+            if len(X) == 0:
+                X = k.T
+            else:
+                X = np.append(X, k.T, axis=0)
+
+            name = f"jana{i}"
+            f_a, tau_a, = residual(data, name)
+            tmp = np.append(f_a, tau_a, axis=1)
+            if len(y) == 0:
+                y = tmp
+            else: 
+                y = np.append(y, tmp, axis=0)
+
+        
         X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state= 1)
 
-        X_train = torch.from_numpy(X_train) 
+        X_train = torch.from_numpy(X_train.T) 
         X_test = torch.from_numpy(X_test)
 
-        y_train = torch.from_numpy(y_train)
+        y_train = torch.from_numpy(y_train.T)
         y_test = torch.from_numpy(y_test)
 
+
         self.double()
-        epos = 25
+        epoche = 50
         loss_fn = nn.MSELoss()
-        optimizer = torch.optim.Adam(self.parameters(), lr =0.001)
+        optimizer = torch.optim.Adam(self.parameters(), lr =0.003)
         train_losses = []
 
         test_losses = []
         
-        for t in range(epos):
+        for t in range(epoche):
             print(f"Epoch {t+1}\n-------------------------------")
             
             train_losses.append(self.train_loop(X_train, y_train, loss_fn, optimizer))

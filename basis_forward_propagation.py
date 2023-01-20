@@ -15,6 +15,13 @@ I = MultirotorConfig.INERTIA
 m = MultirotorConfig.MASS
 ms2g = MultirotorConfig.ms2g
 
+
+def decode_data(path):
+    data_usd = cfusdlog.decode(path)
+    data = data_usd['fixedFrequency']
+    return data
+
+
 def thrust_torque(pwm_1, pwm_2, pwm_3, pwm_4, mv):
     g2N = MultirotorConfig.g2N
     f_1 = (11.09-39.08*pwm_1-9.53*mv +20.57*pwm_1**2 + 38.43*pwm_1*mv)*g2N
@@ -62,13 +69,7 @@ def new_quaternion(v, q, time, prev_time):
     quaternion = rowan.calculus.integrate(q, v, dt)
     return quaternion
 
-def main(path,name):
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("file_usd")
-    # args = parser.parse_args()
-    # data_usd = cfusdlog.decode(args.file_usd)
-    data_usd = cfusdlog.decode(path)
-    data = data_usd['fixedFrequency']
+def propagate(data,name):
 
     pwm_1 = preprocessing.normalize(data['pwm.m1_pwm'][None])[0]
     pwm_2 = preprocessing.normalize(data['pwm.m2_pwm'][None])[0]
@@ -98,7 +99,7 @@ def main(path,name):
     quaternions.append(np.array([data['stateEstimate.qw'][0],data['stateEstimate.qx'][0], data['stateEstimate.qy'][0], data['stateEstimate.qz'][0]]))
 
     for i in range(len(data['timestamp'])-1):
-        R = rowan.to_matrix(np.array(np.array([data['stateEstimate.qw'][i],data['stateEstimate.qx'][i], data['stateEstimate.qy'][i], data['stateEstimate.qz'][i]])))
+        R = rowan.to_matrix(np.array([data['stateEstimate.qw'][i],data['stateEstimate.qx'][i], data['stateEstimate.qy'][i], data['stateEstimate.qz'][i]]))
         z_b= np.asarray(R@z_w) 
         u = thrust_torque(pwm_1[i], pwm_2[i], pwm_3[i], pwm_4[i], mv[i])
 
@@ -155,10 +156,12 @@ def main(path,name):
 if __name__ == "__main__":
     for i in range(7):
         path = f'hardware/data/jana0{i}'
+        data = decode_data(path)
         name = f'jana0{i}'
-        main(path, name)
+        propagate(PendingDeprecationWarning, name)
 
     for i in range(10, 12):
         path = f'hardware/data/jana{i}'
+        data = decode_data(path)
         name = f'jana{i}'
-        main(path, name)
+        propagate(data, name)

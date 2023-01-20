@@ -1,5 +1,16 @@
 Meetings:
 
+20.01-26.01:
+
+progress:
+-read papers about spectral normalization
+- use spectal normalization on the layer of my model
+- use more data to train model
+- use rotation as input
+
+discussion:
+
+
 13.01-19.01:
 
 progress:
@@ -7,8 +18,6 @@ progress:
 
 <img src = 'pdf/f_a.png' width = '200'>
 <img src = 'pdf/tau_a.png' width = '200'>
-
-
 - plots now has the label on the side and the title doesn't overlab with the plot anymore
 
 <img src = 'pdf/Angular Velocity Jana 00.png'  width="200">
@@ -18,7 +27,8 @@ discussion:
 
 
 06.01-12.01:
-
+TypeError: can't convert np.ndarray of type numpy.object_. The only supported types are: float64, float32, float16, complex64, complex128, int64, int32, int16, int8, uint8, and bool.
+jana@jana:~/Uni/Bachelorarbeit/bachelor_thesis$ /bin/python3 /home/jana/Uni/Bachelorarbeit/bachelor_thesis/residual_model.py
 progress:
 - add 1 g-unit to data acceleration
 - wrote Read Me file
