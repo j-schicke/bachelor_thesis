@@ -379,20 +379,6 @@ def compare_data(data, quaternions, acc, vel, vel_a, pos, name):
     compare_gyro(data,vel_a, name)
     compare_position(data, pos, name)
 
-def losses(train_losses, test_losses):
-
-    fig, ax = plt.subplots()
-    ax.plot(range(len(train_losses)), train_losses, label = 'training')
-    ax.plot(range(len(test_losses)), test_losses, label = 'test')
-    ax.set_xlabel('batch')
-    ax.set_ylabel('loss')
-    ax.set_title('losses')
-
-    ax.legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
-
-    plt.tight_layout()
-
-    plt.savefig('pdf/losses.pdf', bbox_inches='tight')
 
 def compare_predicted_f_a(data, f, pred, name):
 
@@ -423,7 +409,7 @@ def compare_predicted_f_a(data, f, pred, name):
     plt.tight_layout()
 
 
-    plt.savefig(f'pdf/{name}/predicted_f_a.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/without rotation, without spectral/{name}/predicted_f_a.pdf', bbox_inches='tight')
 
 def compare_predicted_tau_a(data, tau, pred, name):
 
@@ -451,7 +437,7 @@ def compare_predicted_tau_a(data, tau, pred, name):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/{name}/predicted_tau_a.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/without rotation, without spectral/{name}/predicted_tau_a.pdf', bbox_inches='tight')
 
 
 def losses(train_losses, test_losses):
@@ -467,7 +453,7 @@ def losses(train_losses, test_losses):
 
     plt.tight_layout()
 
-    plt.savefig('pdf/losses.pdf', bbox_inches='tight')
+    plt.savefig('pdf/without rotation, without spectral/losses.pdf', bbox_inches='tight')
 
 
 
@@ -488,7 +474,7 @@ def error_pred_f(data, f, pred, name):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/{name}/error/error_f_a.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/without rotation, without spectral/{name}/error/error_f_a.pdf', bbox_inches='tight')
 
 def error_pred_tau(data, tau, pred, name):
 
@@ -507,4 +493,4 @@ def error_pred_tau(data, tau, pred, name):
 
     plt.tight_layout()
     
-    plt.savefig(f'pdf/{name}/error/error_tau_a.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/without rotation, without spectral/{name}/error/error_tau_a.pdf', bbox_inches='tight')
