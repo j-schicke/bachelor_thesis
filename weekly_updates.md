@@ -1,6 +1,14 @@
 Meetings:
 
-20.01-26.01:
+26.01-02.02:
+
+progress
+- plot the different plots of the model
+- read the docs about xgboost
+- start implementing decision tree
+- write on thesis
+
+20.01-25.01:
 
 progress:
 -read papers about spectral normalization
