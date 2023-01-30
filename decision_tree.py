@@ -5,8 +5,9 @@ from basis_forward_propagation import decode_data
 from residual_calculation import residual
 from sklearn.utils import shuffle
 import rowan
-from sklearn.metrics import mean_squared_error as MSE
+from sklearn.metrics import mean_absolute_error as MAE
 from config.multirotor_config import MultirotorConfig
+from sklearn.utils import shuffle
 
 d2r = MultirotorConfig.deg2rad
 
@@ -42,22 +43,18 @@ def train_tree():
                 y = np.append(y, tmp, axis=0)
             X, y = shuffle(X, y, random_state=3)
 
-    # # Splitting
+    X , y = shuffle(X, y)
     train_X, test_X, train_y, test_y = train_test_split(X, y,train_size=0.7, random_state = 3)
 
-    # Instantiation
-    xgb_r = xg.XGBRegressor(objective ='reg:squarederror', n_estimators = 25 , seed = 3)
-
-    # Fitting the model
+    xgb_r = xg.XGBRegressor()
+    
     xgb_r.fit(train_X, train_y)
-
-    # Predict the model
     pred = xgb_r.predict(test_X)
 
 
 
-    rmse = MSE(test_y, pred)
-    print("RMSE : % f" %(rmse))
+    rmse = MAE(test_y, pred)
+    print("MAE : % f" %(MAE))
 
 
     # xgb_r.save_model('tree.json')
