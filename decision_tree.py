@@ -54,19 +54,9 @@ def train_tree():
     evallist = [(dtrain, 'train'), (dtest, 'eval')]
 
     num_round = 10
+    bst = xg.train(param, dtrain, num_round, evallist)
+    
 
-
-
-    model = xg.XGBRegressor()
-    evalset = [(X_train, y_train), (X_test,y_test)]
-
-
-    model.fit(X_train, y_train, eval_set = evalset, eval_metric = MAE)
-    results = model.evals_result()
-
-    plt.plot(results['validation_0']['MAE'], label='train')
-    plt.plot(results['validation_1']['MAE'], label='test')
-    plt.show()
 
     # pred = model.predict(X_test)
 
