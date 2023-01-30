@@ -6,7 +6,7 @@ from model import NeuralNetwork
 from plot_data import compare_predicted_f_a, compare_predicted_tau_a, error_pred_f, error_pred_tau
 from residual_calculation import residual
 import torch
-import time
+from time import perf_counter
 
 
 def model_predict(data, y, name):
@@ -31,7 +31,7 @@ def model_predict(data, y, name):
     
 if __name__ == '__main__':
 
-    # start = time.time()
+    # start = perf_counter()
 
     for lr in [0.003, 0.0001]:
         for i in ['with rotation', 'without rotation']:
@@ -61,5 +61,5 @@ if __name__ == '__main__':
     #     y = np.append(f_a, tau_a, axis=1)
     #     model_predict(data,y, name)
 
-    # end = time.time()
+    # end = perf_counter()
     # print(end - start)

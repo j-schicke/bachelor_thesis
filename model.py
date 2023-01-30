@@ -131,7 +131,7 @@ class NeuralNetwork(nn.Module):
 
         self.double()
         epoche = 100
-        loss_fn = nn.MSELoss()
+        loss_fn = nn.L1Loss()
         optimizer = torch.optim.Adam(self.parameters(), lr)
         train_losses = []
 
@@ -142,6 +142,9 @@ class NeuralNetwork(nn.Module):
             
             train_losses.append(self.train_loop(X_train, y_train, loss_fn, optimizer))
             test_losses.append(self.test_loop(X_test, y_test, loss_fn, t, epoche, ro, s, lr))
+
+            print(f"Epoch {t+1}\n-------------------------------")
+
 
 
         print("Done!")

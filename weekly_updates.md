@@ -1,5 +1,17 @@
 Meetings:
 
+03.02-09.02:
+
+progress:
+- supervised learning:
+    - plot the test data
+    - test lr: 0.0001 in comparison to lr: 0.003
+    - test MAE in comparison to MSE
+
+- decision tree:
+    - 
+
+
 26.01-02.02:
 
 progress
