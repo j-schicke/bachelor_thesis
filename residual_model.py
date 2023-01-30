@@ -6,6 +6,7 @@ from model import NeuralNetwork
 from plot_data import compare_predicted_f_a, compare_predicted_tau_a, error_pred_f, error_pred_tau
 from residual_calculation import residual
 import torch
+from torch import nn
 from time import perf_counter
 
 
@@ -31,35 +32,33 @@ def model_predict(data, y, name):
     
 if __name__ == '__main__':
 
-    # start = perf_counter()
+    start = perf_counter()
 
-    for lr in [0.003, 0.0001]:
-        for i in ['with rotation', 'without rotation']:
+    for lossfn in [nn.L1Loss(), nn.MSELoss()]:
+        if lossfn == nn.L1Loss():
+            loss = 'MAE'
+        else:
+            loss = 'MSE'
 
-            for j in ['with spectral', 'without spectral']:
-                if i == 'with rotation':
-                    model = NeuralNetwork(input_size= 12)
-                    if j == 'with spectral':
-                        model = NeuralNetwork(input_size= 12, spectral= True)
-                    else: 
+        for lr in [0.003, 0.0001]:
+            for i in ['with rotation', 'without rotation']:
+
+                for j in ['with spectral', 'without spectral']:
+                    if i == 'with rotation':
                         model = NeuralNetwork(input_size= 12)
+                        if j == 'with spectral':
+                            model = NeuralNetwork(input_size= 12, spectral= True)
+                        else: 
+                            model = NeuralNetwork(input_size= 12)
 
-                else:
-                    if j == 'with spectral':
-                        model = NeuralNetwork(spectral= True)
                     else:
-                        model = NeuralNetwork()
-                model.double()
-                model.train_model(i, j, lr) 
+                        if j == 'with spectral':
+                            model = NeuralNetwork(spectral= True)
+                        else:
+                            model = NeuralNetwork()
+                    model.double()
+                    model.train_model(i, j, lr, lossfn, loss) 
     
-    # for i in ['00', '01', '02', '03', '04', '05', '06', '10','11']:
-    #     y = np.array([])
-    #     path = f"hardware/data/jana{i}"
-    #     data = decode_data(path)
-    #     name = f"jana{i}"
-    #     f_a, tau_a, = residual(data, name)
-    #     y = np.append(f_a, tau_a, axis=1)
-    #     model_predict(data,y, name)
 
-    # end = perf_counter()
-    # print(end - start)
+    end = perf_counter()
+    print(end - start)

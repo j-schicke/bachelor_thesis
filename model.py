@@ -56,7 +56,7 @@ class NeuralNetwork(nn.Module):
         print(f'avg. train loss: {avg_train :> 5f}')
         return avg_train
 
-    def test_loop(self, X, y, loss_fn, num, epoche, ro, s, lr):
+    def test_loop(self, X, y, loss_fn, num, epoche, ro, s, lr, loss):
         self.eval()
         test_losses = []
         pred_arr = []
@@ -75,13 +75,13 @@ class NeuralNetwork(nn.Module):
         if num == epoche-1:
             pred_arr = np.array(pred_arr)
             y = np.array(y)
-            plot_test_data_f(y[:, :3], pred_arr, ro, s, lr)
-            plot_test_data_tau(y[:, 3:], pred_arr, ro, s, lr)
+            plot_test_data_f(y[:, :3], pred_arr, ro, s, lr, loss)
+            plot_test_data_tau(y[:, 3:], pred_arr, ro, s, lr, loss)
 
         return avg_test
 
 
-    def train_model(self, ro, s, lr):
+    def train_model(self, ro, s, lr, loss_fn, loss):
         X = np.array([])
         y = np.array([])
 
@@ -117,7 +117,7 @@ class NeuralNetwork(nn.Module):
                 y = tmp
             else: 
                 y = np.append(y, tmp, axis=0)
-            X, y = shuffle(X, y, random_state=3)
+        X, y = shuffle(X, y, random_state=3)
 
         
         X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state= 1)
@@ -131,7 +131,7 @@ class NeuralNetwork(nn.Module):
 
         self.double()
         epoche = 100
-        loss_fn = nn.L1Loss()
+
         optimizer = torch.optim.Adam(self.parameters(), lr)
         train_losses = []
 
@@ -141,9 +141,9 @@ class NeuralNetwork(nn.Module):
             print(f"Epoch {t+1}\n-------------------------------")
             
             train_losses.append(self.train_loop(X_train, y_train, loss_fn, optimizer))
-            test_losses.append(self.test_loop(X_test, y_test, loss_fn, t, epoche, ro, s, lr))
+            test_losses.append(self.test_loop(X_test, y_test, loss_fn, t, epoche, ro, s, lr, loss))
 
-            print(f"Epoch {t+1}\n-------------------------------")
+            print(f"\n-------------------------------")
 
 
 
@@ -151,6 +151,6 @@ class NeuralNetwork(nn.Module):
         train_losses = np.array(train_losses)
         test_losses = np.array(test_losses)
 
-        losses(train_losses, test_losses, ro, s, lr)
+        losses(train_losses, test_losses, ro, s, lr, loss)
 
         torch.save(self.state_dict(), 'model_1.pth')

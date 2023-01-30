@@ -480,7 +480,7 @@ def error_pred_tau(data, tau, pred, name):
     
     plt.savefig(f'pdf/without rotation, without spectral/{name}/error/error_tau_a.pdf', bbox_inches='tight')
 
-def plot_test_data_f(f, pred, ro, s, lr):
+def plot_test_data_f(f, pred, ro, s, lr, loss):
 
     fig, ax = plt.subplots(3)
     t = range(len(f[:,0]))
@@ -508,9 +508,9 @@ def plot_test_data_f(f, pred, ro, s, lr):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/lr: {lr}/{ro}, {s}/predictited f.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/{loss}/lr: {lr}/{ro}, {s}/predictited f.pdf', bbox_inches='tight')
 
-def plot_test_data_tau(tau, pred, ro , s, lr):
+def plot_test_data_tau(tau, pred, ro , s, lr, loss):
     t = range(len(tau[:,0]))
     tau = np.array(tau)
     fig, ax = plt.subplots(3)
@@ -537,10 +537,10 @@ def plot_test_data_tau(tau, pred, ro , s, lr):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/lr: {lr}/{ro}, {s}//predicted tau.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/{loss}/lr: {lr}/{ro}, {s}//predicted tau.pdf', bbox_inches='tight')
 
 
-def losses(train_losses, test_losses, ro, s, lr):
+def losses(train_losses, test_losses, ro, s, lr, loss):
 
     fig, ax = plt.subplots()
     ax.plot(range(len(train_losses)), train_losses, label = 'training')
@@ -553,6 +553,6 @@ def losses(train_losses, test_losses, ro, s, lr):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/lr: {lr}/{ro}, {s}/losses.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/{loss}/lr: {lr}/{ro}, {s}/losses.pdf', bbox_inches='tight')
 
 

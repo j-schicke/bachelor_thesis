@@ -8,6 +8,8 @@ import rowan
 from sklearn.metrics import mean_absolute_error as MAE
 from config.multirotor_config import MultirotorConfig
 from sklearn.utils import shuffle
+import matplotlib.pyplot as plt
+
 
 d2r = MultirotorConfig.deg2rad
 
@@ -41,22 +43,39 @@ def train_tree():
                 y = tmp
             else: 
                 y = np.append(y, tmp, axis=0)
-            X, y = shuffle(X, y, random_state=3)
-
-    X , y = shuffle(X, y)
-    train_X, test_X, train_y, test_y = train_test_split(X, y,train_size=0.7, random_state = 3)
-
-    xgb_r = xg.XGBRegressor()
     
-    xgb_r.fit(train_X, train_y)
-    pred = xgb_r.predict(test_X)
+    X, y = shuffle(X, y, random_state=3)
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y,train_size=0.7, random_state = 3)
+    dtrain = xg.DMatrix(X_train, label=y_train)
+    dtest = xg.DMatrix(X_test, label=y_test)
+
+    param = {'eval_metric': 'mae' , 'eta': 0.003}
+    evallist = [(dtrain, 'train'), (dtest, 'eval')]
+
+    num_round = 10
 
 
 
-    rmse = MAE(test_y, pred)
-    print("MAE : % f" %(MAE))
+    model = xg.XGBRegressor()
+    evalset = [(X_train, y_train), (X_test,y_test)]
 
 
-    # xgb_r.save_model('tree.json')
+    model.fit(X_train, y_train, eval_set = evalset, eval_metric = MAE)
+    results = model.evals_result()
+
+    plt.plot(results['validation_0']['MAE'], label='train')
+    plt.plot(results['validation_1']['MAE'], label='test')
+    plt.show()
+
+    # pred = model.predict(X_test)
+
+
+
+    # mae = MAE(y_test, pred)
+    # print("MAE : % f" %(mae))
+
+
+    # model.save_model('tree.json')
 
 train_tree()
