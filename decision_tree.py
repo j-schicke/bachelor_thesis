@@ -47,25 +47,30 @@ def train_tree():
     X, y = shuffle(X, y, random_state=3)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y,train_size=0.7, random_state = 3)
-    dtrain = xg.DMatrix(X_train, label=y_train)
-    dtest = xg.DMatrix(X_test, label=y_test)
 
-    param = {'eval_metric': 'mae' , 'eta': 0.003}
-    evallist = [(dtrain, 'train'), (dtest, 'eval')]
-
-    num_round = 10
-    bst = xg.train(param, dtrain, num_round, evallist)
-    
-
-
-    # pred = model.predict(X_test)
+    eval_set = [(X_train, y_train), (X_test, y_test)]
 
 
 
-    # mae = MAE(y_test, pred)
-    # print("MAE : % f" %(mae))
+    model = xg.XGBRegressor(n_estimators=100)
+    model.fit(X_train, y_train, eval_set= eval_set, eval_metric='mae', verbose=True, )
+
+    results = model.evals_result()
+
+    results = model.evals_result()
+    epochs = len(results['validation_0']['mae'])
+    x_axis = range(0, epochs)
+
+    fig, ax = plt.subplots()
+    plt.plot(x_axis, results['validation_0']['mae'], label='train')
+    plt.plot(x_axis, results['validation_1']['mae'], label='test')
+    plt.title('Decision Tree Loss')
+
+    plt.legend()
+
+    plt.savefig('pdf/Decision Tree Loss.pdf')
 
 
-    # model.save_model('tree.json')
+    model.save_model('tree.json')
 
 train_tree()
