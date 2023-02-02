@@ -66,7 +66,7 @@ def train_tree():
 
     eval_set = [(X_train, y_train), (X_test, y_test)]
 
-    model = xg.XGBRegressor(n_estimators=1000, learning_rate = 0.0001, objective = 'reg:squarederror')
+    model = xg.XGBRegressor(n_estimators=100, learning_rate = 0.0001, objective = 'reg:squarederror')
     model.fit(X_train, y_train, eval_set = eval_set)
 
     results = model.evals_result()
