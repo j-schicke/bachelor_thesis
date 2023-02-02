@@ -380,105 +380,6 @@ def compare_data(data, quaternions, acc, vel, vel_a, pos, name):
     compare_position(data, pos, name)
 
 
-def compare_predicted_f_a(data, f, pred, name):
-
-    fig, ax = plt.subplots(3)
-
-    ax[0].plot(data['timestamp'][1:], f[:, 0], '-', label='calculated')
-    ax[0].plot(data['timestamp'][1:], pred[:, 0], '-', label='predicted')
-    ax[0].set_xlabel('timestamp [ms]')
-    ax[0].set_ylabel('N')
-    ax[0].set_title('Disturbance Forces X')
-    ax[0].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
-
-    ax[1].plot(data['timestamp'][1:], f[:, 1], '-', label='calculated')
-    ax[1].plot(data['timestamp'][1:], pred[:, 1], '-', label='predicted')
-    ax[1].set_xlabel('timestamp [ms]')
-    ax[1].set_ylabel('N')
-    ax[1].set_title('Disturbance Forces Y')
-    ax[1].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
-
-
-    ax[2].plot(data['timestamp'][1:], f[:,2], '-', label='calculated')
-    ax[2].plot(data['timestamp'][1:], pred[:, 2], '-', label='predicted')
-    ax[2].set_xlabel('timestamp [ms]')
-    ax[2].set_ylabel('N')
-    ax[2].set_title('Disturbance Forces Z')
-    ax[2].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
-
-    plt.tight_layout()
-
-
-    plt.savefig(f'pdf/without rotation, without spectral/{name}/predicted_f_a.pdf', bbox_inches='tight')
-
-def compare_predicted_tau_a(data, tau, pred, name):
-
-    fig, ax = plt.subplots(3)
-    ax[0].plot(data['timestamp'][1:], tau[:,0], '-', label='calculated')
-    ax[0].plot(data['timestamp'][1:], pred[:, 3], '-', label='predicted')
-    ax[0].set_xlabel('timestamp [ms]')
-    ax[0].set_ylabel('rad/s²')
-    ax[0].set_title('Disturbance Torques X')
-    ax[0].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
-    
-    ax[1].plot(data['timestamp'][1:], tau[:,1],'-', label='calculated')
-    ax[1].plot(data['timestamp'][1:], pred[:, 4], '-', label='predicted')
-    ax[1].set_xlabel('timestamp [ms]')
-    ax[1].set_ylabel('rad/s²')
-    ax[1].set_title('Disturbance Torques Y')
-    ax[1].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
-
-    ax[2].plot(data['timestamp'][1:], tau[:,2], '-', label='calculated')
-    ax[2].plot(data['timestamp'][1:], pred[:,5], '-', label='predicted')
-    ax[2].set_xlabel('timestamp [ms]')
-    ax[2].set_ylabel('rad/s²')
-    ax[2].set_title('Disturbance Torques Z')
-    ax[2].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
-
-    plt.tight_layout()
-
-    plt.savefig(f'pdf/without rotation, without spectral/{name}/predicted_tau_a.pdf', bbox_inches='tight')
-
-
-
-
-def error_pred_f(data, f, pred, name):
-
-    err_f = f- pred[:,:3]
-
-    fig, ax = plt.subplots()
-    ax.plot(data['timestamp'][1:], err_f[:,0], '-', label='X')
-    ax.plot(data['timestamp'][1:], err_f[:,1], '-', label='Y')
-    ax.plot(data['timestamp'][1:], err_f[:,2], '-', label='Z')
-
-    ax.set_xlabel('timestamp [ms]')
-    ax.set_ylabel('error')
-    ax.set_title('error of the prediction f')
-
-    ax.legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
-
-    plt.tight_layout()
-
-    plt.savefig(f'pdf/without rotation, without spectral/{name}/error/error_f_a.pdf', bbox_inches='tight')
-
-def error_pred_tau(data, tau, pred, name):
-
-    err_tau = tau-pred[:,3:]
-
-    fig, ax = plt.subplots()
-    ax.plot(data['timestamp'][1:], err_tau[:,0], '-', label='X')
-    ax.plot(data['timestamp'][1:], err_tau[:,1], '-', label='Y')
-    ax.plot(data['timestamp'][1:], err_tau[:,2], '-', label='Z')
-
-    ax.set_xlabel('timestamp [ms]')
-    ax.set_ylabel('error')
-    ax.set_title('error of the prediction tau')
-
-    ax.legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
-
-    plt.tight_layout()
-    
-    plt.savefig(f'pdf/without rotation, without spectral/{name}/error/error_tau_a.pdf', bbox_inches='tight')
 
 def plot_test_data_f(f, pred, ro, s, lr, loss):
 
@@ -508,7 +409,7 @@ def plot_test_data_f(f, pred, ro, s, lr, loss):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/{loss}/lr: {lr}/{ro}, {s}/predictited f.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/Supervised learning/{loss}/lr: {lr}/{ro}, {s}/predictited f.pdf', bbox_inches='tight')
 
 def plot_test_data_tau(tau, pred, ro , s, lr, loss):
     t = range(len(tau[:,0]))
@@ -537,7 +438,7 @@ def plot_test_data_tau(tau, pred, ro , s, lr, loss):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/{loss}/lr: {lr}/{ro}, {s}//predicted tau.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/Supervised learning/{loss}/lr: {lr}/{ro}, {s}//predicted tau.pdf', bbox_inches='tight')
 
 
 def losses(train_losses, test_losses, ro, s, lr, loss):
@@ -553,6 +454,80 @@ def losses(train_losses, test_losses, ro, s, lr, loss):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/{loss}/lr: {lr}/{ro}, {s}/losses.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/Supervised learning/{loss}/lr: {lr}/{ro}, {s}/losses.pdf', bbox_inches='tight')
+
+
+
+def plot_test_pred_f(f, pred):
+
+    fig, ax = plt.subplots(3)
+    t = range(len(f[:,0]))
+    ax[0].plot(t, f[:, 0], '-', label='calculated', alpha=0.7)
+    ax[0].plot(t, pred[:, 0], '-', label='predicted', alpha=0.7)
+    ax[0].set_xlabel('test data')
+    ax[0].set_ylabel('N')
+    ax[0].set_title('Disturbance Forces X')
+    ax[0].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
+
+    ax[1].plot(t, f[:, 1], '-', label='calculated', alpha=0.7)
+    ax[1].plot(t, pred[:, 1], '-', label='predicted', alpha=0.7)
+    ax[1].set_xlabel('test data')
+    ax[1].set_ylabel('N')
+    ax[1].set_title('Disturbance Forces Y')
+    ax[1].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
+
+
+    ax[2].plot(t, f[:,2], '-', label='calculated', alpha=0.7)
+    ax[2].plot(t, pred[:, 2], '-', label='predicted', alpha=0.7)
+    ax[2].set_xlabel('test data')
+    ax[2].set_ylabel('N')
+    ax[2].set_title('Disturbance Forces Z')
+    ax[2].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
+
+    plt.tight_layout()
+
+    plt.savefig(f'pdf/Decision Tree/predictited f.pdf', bbox_inches='tight')
+
+def plot_test_pred_tau(tau, pred):
+    t = range(len(tau[:,0]))
+    tau = np.array(tau)
+    fig, ax = plt.subplots(3)
+    ax[0].plot(t, tau[:,0], '-', label='calculated', alpha=0.7)
+    ax[0].plot(t, pred[:,3], '-', label='predicted', alpha=0.7)
+    ax[0].set_xlabel('test data')
+    ax[0].set_ylabel('rad/s²')
+    ax[0].set_title('Disturbance Torques X')
+    ax[0].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
+    
+    ax[1].plot(t, tau[:,1],'-', label='calculated', alpha=0.7)
+    ax[1].plot(t, pred[:, 4], '-', label='predicted', alpha=0.7)
+    ax[1].set_xlabel('test data')
+    ax[1].set_ylabel('rad/s²')
+    ax[1].set_title('Disturbance Torques Y')
+    ax[1].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
+
+    ax[2].plot(t, tau[:,2], '-', label='calculated', alpha=0.7)
+    ax[2].plot(t, pred[:,5], '-', label='predicted', alpha=0.7)
+    ax[2].set_xlabel('test data')
+    ax[2].set_ylabel('rad/s²')
+    ax[2].set_title('Disturbance Torques Z')
+    ax[2].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
+
+    plt.tight_layout()
+
+    plt.savefig(f'pdf/Decision Tree/predicted tau.pdf', bbox_inches='tight')
+
+def tree_losses(results):
+
+    epochs = len(results['validation_0']['rmse'])
+    x_axis = range(0, epochs)
+
+    fig, ax = plt.subplots()
+    plt.plot(x_axis, results['validation_0']['rmse'], label='train')
+    plt.plot(x_axis, results['validation_1']['rmse'], label='test')
+    plt.title('Decision Tree Loss')
+
+    plt.legend()
+    plt.savefig('pdf/Decision Tree/Decision Tree Loss.pdf')
 
 

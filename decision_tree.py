@@ -5,13 +5,27 @@ from basis_forward_propagation import decode_data
 from residual_calculation import residual
 from sklearn.utils import shuffle
 import rowan
-from sklearn.metrics import mean_absolute_error as MAE
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 from config.multirotor_config import MultirotorConfig
 from sklearn.utils import shuffle
 import matplotlib.pyplot as plt
+from plot_data import plot_test_pred_f, plot_test_pred_tau, tree_losses
+import pandas as pd 
 
 
 d2r = MultirotorConfig.deg2rad
+
+def test_tree(X, y, model):
+    pred = model.predict(X.values)
+
+
+    y = np.array(y)
+    pred = np.array(pred)
+    plot_test_pred_f(y[:, :3], pred)
+    plot_test_pred_tau(y[:, 3:], pred)
+
+
+
 
 def train_tree():
     X = np.array([])
@@ -46,31 +60,22 @@ def train_tree():
     
     X, y = shuffle(X, y, random_state=3)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y,train_size=0.7, random_state = 3)
+    df = pd.DataFrame(X, columns = ['Vel X','Vel Y','Vel Z', 'Gyr X', 'Gyr Y', 'Gyr Z', 'rot 00', 'rot 01', 'rot 02', 'rot10', 'rot11', 'rot12'])
+
+    X_train, X_test, y_train, y_test = train_test_split(df, y,train_size=0.7, random_state = 3)
 
     eval_set = [(X_train, y_train), (X_test, y_test)]
 
-
-
-    model = xg.XGBRegressor(n_estimators=100)
-    model.fit(X_train, y_train, eval_set= eval_set, eval_metric='mae', verbose=True, )
+    model = xg.XGBRegressor(n_estimators=1000, learning_rate = 0.0001, objective = 'reg:squarederror')
+    model.fit(X_train, y_train, eval_set = eval_set)
 
     results = model.evals_result()
+    tree_losses(results)
 
-    results = model.evals_result()
-    epochs = len(results['validation_0']['mae'])
-    x_axis = range(0, epochs)
-
-    fig, ax = plt.subplots()
-    plt.plot(x_axis, results['validation_0']['mae'], label='train')
-    plt.plot(x_axis, results['validation_1']['mae'], label='test')
-    plt.title('Decision Tree Loss')
-
-    plt.legend()
-
-    plt.savefig('pdf/Decision Tree Loss.pdf')
-
+    # xg.plot_importance(model)
+    # plt.savefig('pdf/Decision Tree/features.pdf')
 
     model.save_model('tree.json')
+    test_tree(X_test,y_test, model)
 
 train_tree()
