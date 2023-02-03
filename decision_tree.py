@@ -72,8 +72,8 @@ def train_tree():
     results = model.evals_result()
     tree_losses(results)
 
-    # xg.plot_importance(model)
-    # plt.savefig('pdf/Decision Tree/features.pdf')
+    xg.plot_importance(model)
+    plt.savefig('pdf/Decision Tree/features.pdf')
 
     model.save_model('tree.json')
     test_tree(X_test,y_test, model)

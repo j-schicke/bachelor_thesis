@@ -9,7 +9,10 @@ progress:
     - test MAE in comparison to MSE
 
 - decision tree:
-    - 
+    - plot test data
+    - train the tree with same parameter same as supervised learning model
+
+- wrote on thesis
 
 
 26.01-02.02:
