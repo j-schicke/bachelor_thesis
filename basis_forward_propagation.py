@@ -4,7 +4,7 @@ import argparse
 import numpy as np
 from config.multirotor_config import MultirotorConfig
 import rowan
-from plot_data import compare_data, errors, trajectory
+from plot_data import compare_data, errors, trajectory_x_y_plane, trajectory
 from sklearn import preprocessing
 
 ms2s = MultirotorConfig.ms2s
@@ -151,16 +151,11 @@ def propagate(data,name):
 
     compare_data(data, quaternions, acc, vel, vel_a, pos, name )
     errors(data, err_acc, err_vel, err_pos, err_vel_a, err_quaternions, name)
+    trajectory_x_y_plane(data, name)
     trajectory(data, name)
 
 if __name__ == "__main__":
-    for i in range(7):
-        path = f'hardware/data/jana0{i}'
-        data = decode_data(path)
-        name = f'jana0{i}'
-        propagate(PendingDeprecationWarning, name)
-
-    for i in range(10, 12):
+    for i in ['00', '01', '02', '03', '04','05', '06', '10', '11']:
         path = f'hardware/data/jana{i}'
         data = decode_data(path)
         name = f'jana{i}'

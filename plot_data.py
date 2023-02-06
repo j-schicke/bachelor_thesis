@@ -91,6 +91,24 @@ def compare_position(data, pos, name):
     plt.savefig(f'pdf/{name}/position.pdf', bbox_inches='tight')  
 
 
+def trajectory_x_y_plane(data, name):
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+    xline = data['stateEstimate.x']
+    yline = data['stateEstimate.y']
+    zline = data['stateEstimate.z']
+
+    ax.plot3D(xline, yline, zline, 'gray')
+    ax.view_init(elev=90)
+
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+
+    plt.tight_layout()
+
+    plt.savefig(f'pdf/{name}/trajectory_x_y_plane.pdf', bbox_inches='tight')
+
 def trajectory(data, name):
     fig = plt.figure()
     ax = plt.axes(projection='3d')
@@ -99,7 +117,7 @@ def trajectory(data, name):
     zline = data['stateEstimate.z']
 
     ax.plot3D(xline, yline, zline, 'gray')
-    ax.view_init(-100, 100)
+#    ax.view_init(-60, 60)
 
     ax.set_xlabel('x')
     ax.set_ylabel('y')
@@ -108,6 +126,7 @@ def trajectory(data, name):
     plt.tight_layout()
 
     plt.savefig(f'pdf/{name}/trajectory.pdf', bbox_inches='tight')
+
 
 def compare_velocity(data, vel, name):
 
@@ -381,7 +400,7 @@ def compare_data(data, quaternions, acc, vel, vel_a, pos, name):
 
 
 
-def plot_test_data_f(f, pred, ro, s, lr, loss):
+def plot_test_data_f(f, pred):
 
     fig, ax = plt.subplots(3)
     t = range(len(f[:,0]))
@@ -409,28 +428,28 @@ def plot_test_data_f(f, pred, ro, s, lr, loss):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/Supervised learning/{loss}/lr: {lr}/{ro}, {s}/predictited f.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/Supervised learning/tau/predictited f.pdf', bbox_inches='tight')
 
-def plot_test_data_tau(tau, pred, ro , s, lr, loss):
-    t = range(len(tau[:,0]))
-    tau = np.array(tau)
+def plot_test_data_tau(tau, pred):
+    t = range(len(tau[0, :]))
+    tau = np.array(tau).T
     fig, ax = plt.subplots(3)
     ax[0].plot(t, tau[:,0], '-', label='calculated', alpha=0.7)
-    ax[0].plot(t, pred[:,3], '-', label='predicted', alpha=0.7)
+    ax[0].plot(t, pred[0,:], '-', label='predicted', alpha=0.7)
     ax[0].set_xlabel('test data')
     ax[0].set_ylabel('rad/s²')
     ax[0].set_title('Disturbance Torques X')
     ax[0].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
     
     ax[1].plot(t, tau[:,1],'-', label='calculated', alpha=0.7)
-    ax[1].plot(t, pred[:, 4], '-', label='predicted', alpha=0.7)
+    ax[1].plot(t, pred[1,:], '-', label='predicted', alpha=0.7)
     ax[1].set_xlabel('test data')
     ax[1].set_ylabel('rad/s²')
     ax[1].set_title('Disturbance Torques Y')
     ax[1].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
 
     ax[2].plot(t, tau[:,2], '-', label='calculated', alpha=0.7)
-    ax[2].plot(t, pred[:,5], '-', label='predicted', alpha=0.7)
+    ax[2].plot(t, pred[2,:], '-', label='predicted', alpha=0.7)
     ax[2].set_xlabel('test data')
     ax[2].set_ylabel('rad/s²')
     ax[2].set_title('Disturbance Torques Z')
@@ -438,10 +457,10 @@ def plot_test_data_tau(tau, pred, ro , s, lr, loss):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/Supervised learning/{loss}/lr: {lr}/{ro}, {s}//predicted tau.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/Supervised learning/tau/predicted tau.pdf', bbox_inches='tight')
 
 
-def losses(train_losses, test_losses, ro, s, lr, loss):
+def losses(train_losses, test_losses):
 
     fig, ax = plt.subplots()
     ax.plot(range(len(train_losses)), train_losses, label = 'training')
@@ -454,7 +473,7 @@ def losses(train_losses, test_losses, ro, s, lr, loss):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/Supervised learning/{loss}/lr: {lr}/{ro}, {s}/losses.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/Supervised learning/tau/losses.pdf', bbox_inches='tight')
 
 
 
