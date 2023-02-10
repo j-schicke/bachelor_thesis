@@ -1,5 +1,20 @@
 Meetings:
 
+10.02-16.02:
+
+progress:
+- supervised learning:
+    - tried shuffle every epoche and compare just scale tau_a with scale f_a and tau_a (plots under supervised learning/08.02/shuffle every epoche) 
+    - shuffle only in the beginning and compare just scale tau_a with scale f_a and tau_a (plots under supervised learning/08.02/shuffle once)
+    - test data is file jana03 (figure 8)
+
+- decision tree:
+    - plot just f_a and shuffle the data once (Decision Tree/f_a)
+    - compared the scaled f_a with the uscaled f_a model
+    - test plot is file jana02 (figure 8)
+
+
+
 03.02-09.02:
 
 progress:
@@ -30,8 +45,6 @@ progress:
 - use spectal normalization on the layer of my model
 - use more data to train model
 - use rotation as input
-
-discussion:
 
 
 13.01-19.01:

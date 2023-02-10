@@ -17,10 +17,9 @@ if __name__ == '__main__':
 
     start = perf_counter()
 
-    model = NeuralNetwork(input_size= 12, output_size=3, spectral= True)
+    model = NeuralNetwork(input_size= 12)
     model.double()
     model.train_model() 
-    
 
     end = perf_counter()
     print(end - start)
