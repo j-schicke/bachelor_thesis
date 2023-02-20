@@ -10,12 +10,15 @@ from residual_calculation import residual
 from sklearn.preprocessing import MinMaxScaler
 import rowan
 from sklearn.utils import shuffle
+from sklearn.model_selection import KFold
+import pandas as pd
 
 d2r = MultirotorConfig.deg2rad
+g = MultirotorConfig.GRAVITATION
 
 
 class NeuralNetwork(nn.Module):
-    def __init__(self, input_size = 6, hidden_size = 6, output_size = 6, spectral = True):
+    def __init__(self, input_size = 18, hidden_size = 9, output_size = 3, spectral = False):
         super(NeuralNetwork, self).__init__()
         
         self.input_size = input_size
@@ -29,6 +32,7 @@ class NeuralNetwork(nn.Module):
             )
         else:
             self.linear_relu = nn.Sequential(
+                nn.Dropout(),
                 nn.Linear(self.input_size, self.hidden_size),
                 nn.ReLU(),
                 nn.Linear(self.hidden_size, self.output_size)
@@ -60,7 +64,7 @@ class NeuralNetwork(nn.Module):
         print(f'avg. train loss: {avg_train :> 5f}')
         return avg_train
 
-    def test_loop(self, X, y, loss_fn, num, epoche, test_timestamp):
+    def test_loop(self, X, y, loss_fn):
         self.eval()
         test_losses = []
         pred_arr = []
@@ -80,12 +84,6 @@ class NeuralNetwork(nn.Module):
                 
         avg_test = np.array(test_losses).sum()/len(y) 
         print(f'avg. test loss: {avg_test :> 5f}')
-        if num == epoche-1:
-            pred_arr = np.array(pred_arr)
-            y = np.array(y)
-            plot_test_data_f(y[:, :3], pred_arr, test_timestamp)
-            plot_test_data_tau(y[:,3:], pred_arr, test_timestamp)
-
         return avg_test
 
 
@@ -97,9 +95,13 @@ class NeuralNetwork(nn.Module):
         for i in ['00', '01', '02', '03', '04', '05', '06', '10','11']:
 
 
+
             data = decode_data(f"hardware/data/jana{i}")
 
-            k = np.array([data['stateEstimate.vx'][1:], data['stateEstimate.vy'][1:], data['stateEstimate.vz'][1:], data['gyro.x'][1:]*d2r, data['gyro.y'][1:]*d2r,data['gyro.z'][1:]*d2r])
+            #k = np.array([data['stateEstimate.vx'][1:], data['stateEstimate.vy'][1:], data['stateEstimate.vz'][1:], data['gyro.x'][1:]*d2r, data['gyro.y'][1:]*d2r,data['gyro.z'][1:]*d2r, data['stateEstimate.x'][1:], data['stateEstimate.y'][1:], data['stateEstimate.z'][1:]] )
+            #k = np.array([data['stateEstimate.vx'][1:], data['stateEstimate.vy'][1:], data['stateEstimate.vz'][1:], data['gyro.x'][1:]*d2r, data['gyro.y'][1:]*d2r,data['gyro.z'][1:]*d2r ])
+            #k = np.array([data['stateEstimate.vx'][1:], data['stateEstimate.vy'][1:], data['stateEstimate.vz'][1:], data['gyro.x'][1:]*d2r, data['gyro.y'][1:]*d2r,data['gyro.z'][1:]*d2r, data['acc.x'][1:]*g, data['acc.y'][1:]*g, data['acc.z'][1:]*g])
+            k = np.array([data['stateEstimate.vx'][1:], data['stateEstimate.vy'][1:], data['stateEstimate.vz'][1:], data['gyro.x'][1:]*d2r, data['gyro.y'][1:]*d2r,data['gyro.z'][1:]*d2r, data['acc.x'][1:]*g, data['acc.y'][1:]*g, data['acc.z'][1:]*g,data['stateEstimate.x'][1:], data['stateEstimate.y'][1:], data['stateEstimate.z'][1:]])
 
             r = np.array([])
 
@@ -113,12 +115,13 @@ class NeuralNetwork(nn.Module):
                 else:
                     r = np.append(r, R, axis=0)
             k = np.append(k, r.T, axis = 0)
-            if i == '03':
-                X_test = k.T
+
+            if i == '02':
+                X_test_02 = k.T
                 name = f"jana{i}"
                 f_a, tau_a, = residual(data, name)
                 tmp = np.append(f_a, tau_a, axis=1)
-                y_test = tmp
+                y_test_02 = f_a
                 test_timestamp = data['timestamp'][1:]
             
             else:
@@ -129,51 +132,64 @@ class NeuralNetwork(nn.Module):
 
                 name = f"jana{i}"
                 f_a, tau_a, = residual(data, name)
-                tmp = np.append(f_a, tau_a, axis=1)
+                #tmp = np.append(f_a, tau_a, axis=1)
                 if len(y) == 0:
-                    y = tmp
+                    y = f_a
                 else: 
-                    y = np.append(y, tmp, axis=0)
+                    y = np.append(y, f_a, axis=0)
 
-        # X_train, y_train = shuffle(X, y, random_state=3)
-        # X_train = torch.from_numpy(X_train.T) 
-        # X_test = torch.from_numpy(X_test)
 
-        X_train = torch.from_numpy(X.T) 
-        X_test = torch.from_numpy(X_test)
-        y_train = y
 
-        y_full = np.append(y_train[:,3:], y_test[:,3:], axis=0)
-        y_scaled = minmax_scaler.fit_transform(y_full)
-        y_train = np.append(y_train[:, :3], y_scaled[:len(y_train),:], axis = 1)
-        y_test = np.append(y_test[:,:3],y_scaled[len(y_train):,:], axis = 1)
-        y_train = torch.from_numpy(y_train.T) 
-        y_test = torch.from_numpy(y_test)
+
+        X, y = shuffle(X, y)
+        X_test_02 = torch.from_numpy(X_test_02)
+        X_test = X_test_02
+        y_test_02 = torch.from_numpy(np.array(y_test_02))
+        y_test = y_test_02
+
+        X_train = torch.from_numpy(np.array(X).T)
+        y_train = torch.from_numpy(np.array(y).T)
+
+        # y= pd.DataFrame(y)
+        # X= pd.DataFrame(X)
+
+        
+
   
 
 
         self.double()
-        epoche = 100
-        optimizer = torch.optim.Adam(self.parameters(), lr = 0.003)
+        weight_decay =1e-4
+        epoche = 7
+        k = 10
+        #optimizer = torch.optim.Adam(self.parameters(), lr = 0.003, weight_decay= weight_decay)
+        optimizer = torch.optim.Adam(self.parameters(), lr = 0.003 )
+
         loss_fn = nn.MSELoss()
         train_losses = []
 
         test_losses = []
-        
-        for t in range(epoche):
-            print(f"Epoch {t+1}\n-------------------------------")
-
-            X_train = X_train.numpy().T
-            y_train = y_train.numpy().T
-            X_train, y_train = shuffle(X_train, y_train, random_state=3)
-            X_train = torch.from_numpy(X_train).T
-            y_train = torch.from_numpy(y_train).T
+        kf = KFold(n_splits=k)
+        for i, (train_index, test_index) in enumerate(kf.split(X)):
 
 
-            train_losses.append(self.train_loop(X_train, y_train, loss_fn, optimizer))
-            test_losses.append(self.test_loop(X_test, y_test, loss_fn, t, epoche, test_timestamp))
+            for t in range(epoche):
+                print(f'Fold {i+1}\n--------------------------------')
+                print(f"Epoch {t+1}\n-------------------------------")
+                # X_train, X_test, y_train, y_test = X.iloc[train_index,:], X.iloc[test_index,:], y.iloc[train_index,:], y.iloc[test_index,:]
 
-            print(f"\n-------------------------------")
+                # X_train = X_train.to_numpy()
+                # X_test = X_test.to_numpy()
+                # X_train = torch.from_numpy(X_train.T)
+                # y_train = torch.from_numpy(y_train.to_numpy().T)
+                # X_test = torch.from_numpy(X_test)
+                # y_test = torch.from_numpy(y_test.to_numpy())
+
+
+                train_losses.append(self.train_loop(X_train, y_train, loss_fn, optimizer))
+                test_losses.append(self.test_loop(X_test, y_test, loss_fn))
+
+                print(f"\n-------------------------------")
 
 
 
@@ -184,3 +200,4 @@ class NeuralNetwork(nn.Module):
         losses(train_losses, test_losses)
 
         torch.save(self.state_dict(), 'model_1.pth')
+        return test_timestamp, X_test_02, y_test_02

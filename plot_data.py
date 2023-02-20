@@ -480,14 +480,14 @@ def plot_test_pred_f(f, pred, test_timestamp):
     fig, ax = plt.subplots(3)
     ax[0].plot(test_timestamp, f[:, 0], '-', label='calculated', alpha=0.7)
     ax[0].plot(test_timestamp, pred[:, 0], '-', label='predicted', alpha=0.7)
-    ax[0].set_xlabel('test data')
+    ax[0].set_xlabel('timestamp')
     ax[0].set_ylabel('N')
     ax[0].set_title('Disturbance Forces X')
     ax[0].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
 
     ax[1].plot(test_timestamp, f[:, 1], '-', label='calculated', alpha=0.7)
     ax[1].plot(test_timestamp, pred[:, 1], '-', label='predicted', alpha=0.7)
-    ax[1].set_xlabel('test data')
+    ax[1].set_xlabel('timestamp')
     ax[1].set_ylabel('N')
     ax[1].set_title('Disturbance Forces Y')
     ax[1].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
@@ -495,7 +495,7 @@ def plot_test_pred_f(f, pred, test_timestamp):
 
     ax[2].plot(test_timestamp, f[:,2], '-', label='calculated', alpha=0.7)
     ax[2].plot(test_timestamp, pred[:, 2], '-', label='predicted', alpha=0.7)
-    ax[2].set_xlabel('test data')
+    ax[2].set_xlabel('timestamp')
     ax[2].set_ylabel('N')
     ax[2].set_title('Disturbance Forces Z')
     ax[2].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
@@ -504,27 +504,27 @@ def plot_test_pred_f(f, pred, test_timestamp):
 
     plt.savefig(f'pdf/Decision Tree/predictited f.pdf', bbox_inches='tight')
 
-def plot_test_pred_tau(tau, pred):
-    t = range(len(tau[:,0]))
+def plot_test_pred_tau(tau, pred, test_timestamp):
+    t = test_timestamp
     tau = np.array(tau)
     fig, ax = plt.subplots(3)
     ax[0].plot(t, tau[:,0], '-', label='calculated', alpha=0.7)
     ax[0].plot(t, pred[:,3], '-', label='predicted', alpha=0.7)
-    ax[0].set_xlabel('test data')
+    ax[0].set_xlabel('timestamp')
     ax[0].set_ylabel('rad/s²')
     ax[0].set_title('Disturbance Torques X')
     ax[0].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
     
     ax[1].plot(t, tau[:,1],'-', label='calculated', alpha=0.7)
     ax[1].plot(t, pred[:, 4], '-', label='predicted', alpha=0.7)
-    ax[1].set_xlabel('test data')
+    ax[1].set_xlabel('timestamp')
     ax[1].set_ylabel('rad/s²')
     ax[1].set_title('Disturbance Torques Y')
     ax[1].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
 
     ax[2].plot(t, tau[:,2], '-', label='calculated', alpha=0.7)
     ax[2].plot(t, pred[:,5], '-', label='predicted', alpha=0.7)
-    ax[2].set_xlabel('test data')
+    ax[2].set_xlabel('timestamp')
     ax[2].set_ylabel('rad/s²')
     ax[2].set_title('Disturbance Torques Z')
     ax[2].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
@@ -545,5 +545,68 @@ def tree_losses(results):
 
     plt.legend()
     plt.savefig('pdf/Decision Tree/Decision Tree Loss.pdf')
+
+def tree_error_f(f, pred, test_timestamp):
+    fig, ax = plt.subplots()
+    error_f = f-pred[:,:3]
+
+    ax.plot(test_timestamp, error_f[:, 0], '-', label='calculated', alpha=0.7)
+    ax.plot(test_timestamp, error_f[:, 1], '-', label='predicted', alpha=0.7)    
+    ax.plot(test_timestamp, error_f[:, 2], '-', label='predicted', alpha=0.7)
+    ax.set_xlabel('timestamp')
+    ax.set_ylabel('error')
+    ax.set_title('Disturbance Forces Error')
+    ax.legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
+
+    # ax[1].plot(test_timestamp, f[:, 1], '-', label='calculated', alpha=0.7)
+    # ax[1].plot(test_timestamp, pred[:, 1], '-', label='predicted', alpha=0.7)
+    # ax[1].set_xlabel('time')
+    # ax[1].set_ylabel('N')
+    # ax[1].set_title('Disturbance Forces Y')
+    # ax[1].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
+
+
+    # ax[2].plot(test_timestamp, f[:,2], '-', label='calculated', alpha=0.7)
+    # ax[2].plot(test_timestamp, pred[:, 2], '-', label='predicted', alpha=0.7)
+    # ax[2].set_xlabel('time')
+    # ax[2].set_ylabel('N')
+    # ax[2].set_title('Disturbance Forces Z')
+    # ax[2].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
+
+    plt.tight_layout()
+
+    plt.savefig(f'pdf/Decision Tree/predictited f absolut error.pdf', bbox_inches='tight')
+
+
+def tree_error_tau(tau, pred, test_timestamp):
+    fig, ax = plt.subplots()
+    error_tau = tau-pred[:,3:]
+
+    ax.plot(test_timestamp, error_tau[:, 0], '-', label='calculated', alpha=0.7)
+    ax.plot(test_timestamp, error_tau[:, 1], '-', label='predicted', alpha=0.7)    
+    ax.plot(test_timestamp, error_tau[:, 2], '-', label='predicted', alpha=0.7)
+    ax.set_xlabel('timestamp')
+    ax.set_ylabel('error')
+    ax.set_title('Disturbance Torques Error')
+    ax.legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
+
+    # ax[1].plot(test_timestamp, f[:, 1], '-', label='calculated', alpha=0.7)
+    # ax[1].plot(test_timestamp, pred[:, 1], '-', label='predicted', alpha=0.7)
+    # ax[1].set_xlabel('time')
+    # ax[1].set_ylabel('N')
+    # ax[1].set_title('Disturbance Forces Y')
+    # ax[1].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
+
+
+    # ax[2].plot(test_timestamp, f[:,2], '-', label='calculated', alpha=0.7)
+    # ax[2].plot(test_timestamp, pred[:, 2], '-', label='predicted', alpha=0.7)
+    # ax[2].set_xlabel('time')
+    # ax[2].set_ylabel('N')
+    # ax[2].set_title('Disturbance Forces Z')
+    # ax[2].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
+
+    plt.tight_layout()
+
+    plt.savefig(f'pdf/Decision Tree/predictited tau absolut error.pdf', bbox_inches='tight')
 
 

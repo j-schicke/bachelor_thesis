@@ -9,7 +9,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 from config.multirotor_config import MultirotorConfig
 from sklearn.utils import shuffle
 import matplotlib.pyplot as plt
-from plot_data import plot_test_pred_f, plot_test_pred_tau, tree_losses
+from plot_data import plot_test_pred_f, plot_test_pred_tau, tree_losses, tree_error_f, tree_error_tau
 import pandas as pd 
 from sklearn.preprocessing import MinMaxScaler
 
@@ -23,7 +23,9 @@ def test_tree(X, y, model, test_timestamp):
     y = np.array(y)
     pred = np.array(pred)
     plot_test_pred_f(y[:, :3], pred, test_timestamp)
-    # plot_test_pred_tau(y[:, 3:], pred)
+    plot_test_pred_tau(y[:, 3:], pred, test_timestamp)
+    tree_error_f(y[:, :3], pred, test_timestamp)
+    tree_error_tau(y[:, 3:], pred, test_timestamp)
 
 
 
@@ -38,7 +40,7 @@ def train_tree():
             X_test = np.array([data['stateEstimate.vx'][1:], data['stateEstimate.vy'][1:], data['stateEstimate.vz'][1:], data['gyro.x'][1:]*d2r, data['gyro.y'][1:]*d2r,data['gyro.z'][1:]*d2r])
             name = f"jana{i}"
             f_a,tau_a = residual(data, name)
-            y_test = f_a
+            y_test = np.append(f_a, tau_a, axis=1)
             test_timestamp = data['timestamp'][1:]
 
         else:
@@ -52,7 +54,7 @@ def train_tree():
 
             name = f"jana{i}"
             f_a, tau_a = residual(data, name)
-            tmp = f_a
+            tmp = np.append(f_a, tau_a, axis=1)
             if len(y_train) == 0:
                 y_train = tmp
             else: 
