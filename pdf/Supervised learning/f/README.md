@@ -4,7 +4,6 @@ f00:
 - shuffle: once
 - weight decay: False
 - Dropout: False
-- hidden layer: 6
 - K Folds: False
 
 
@@ -14,7 +13,6 @@ f01:
 - shuffle: once
 - weight decay: False
 - Dropout: False
-- hidden layer: 6
 - K Folds: False
 
 f02:
@@ -23,7 +21,6 @@ f02:
 - shuffle: onve
 - weight decay: False
 - Dropout: False
-- hidden layer: 6
 - K Folds: False
 
 f03:
@@ -32,7 +29,6 @@ f03:
 - shuffle: every epoche
 - weight decay: False
 - Dropout: False
-- hidden layer: 6
 - K Folds: False
 
 f04:
@@ -41,7 +37,6 @@ f04:
 - shuffle: once
 - weight decay: False
 - Dropout: False
-- hidden layer: 6
 - K Folds: False
 
 f05:
@@ -50,7 +45,6 @@ f05:
 - shuffle: once
 - weight decay: False
 - Dropout: False
-- hidden layer: 6
 - K Folds: False
 
 f06:
@@ -59,7 +53,6 @@ f06:
 - shuffle: once
 - weight decay: False
 - Dropout: False
-- hidden layer: 6
 - K Folds: False
 
 f07:
@@ -68,7 +61,6 @@ f07:
 - shuffle: once
 - weight decay: False
 - Dropout: True
-- hidden layer: 6
 - K Folds: False
 
 f08:
@@ -77,7 +69,6 @@ f08:
 - shuffle: once
 - weight decay: True
 - Dropout: True
-- hidden layer: 6
 - K Folds: False
 
 f09:
@@ -86,7 +77,6 @@ f09:
 - shuffle: once
 - weight decay: True
 - Dropout: True
-- hidden layer: 6
 - K Folds: 10 folds
 
 f10:
@@ -95,7 +85,6 @@ f10:
 - shuffle: once
 - weight decay: True
 - Dropout: True
-- hidden layer: 6
 - K Folds: 10 folds
 
 f11:
@@ -104,7 +93,6 @@ f11:
 - shuffle: once
 - weight decay: True
 - Dropout: True
-- hidden layer: 6
 - K Folds: 10 folds
 
 f12:
@@ -113,7 +101,6 @@ f12:
 - shuffle: once
 - weight decay: True
 - Dropout: True
-- hidden layer: 6
 - K Folds: 10 folds
 
 f13:
@@ -122,7 +109,6 @@ f13:
 - shuffle: once
 - weight decay: True
 - Dropout: True
-- hidden layer: 6
 - K Folds: 10 folds
 
 f14:
@@ -131,7 +117,6 @@ f14:
 - shuffle: once
 - weight decay: True
 - Dropout: True
-- hidden layer: 6
 - K Folds: 10 folds
 
 f15:
@@ -140,7 +125,6 @@ f15:
 - shuffle: once
 - weight decay: True
 - Dropout: True
-- hidden layer: 6
 - K Folds: 10 folds
 
 f16:
@@ -149,7 +133,6 @@ f16:
 - shuffle: once
 - weight decay: False
 - Dropout: True
-- hidden layer: 6
 - K Folds: False
 
 f17:
@@ -158,7 +141,6 @@ f17:
 - shuffle: once
 - weight decay: False
 - Dropout: True
-- hidden layer: 6
 - K Folds: False
 
 f18:
@@ -167,7 +149,6 @@ f18:
 - shuffle: once
 - weight decay: False
 - Dropout: True
-- hidden layer: 6
 - K Folds: False
 
 f19:
@@ -176,5 +157,4 @@ f19:
 - shuffle: once
 - weight decay: False
 - Dropout: True
-- hidden layer: 6
 - K Folds: False
