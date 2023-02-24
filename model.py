@@ -18,7 +18,7 @@ g = MultirotorConfig.GRAVITATION
 
 
 class NeuralNetwork(nn.Module):
-    def __init__(self, input_size = 6, hidden_size = 6, output_size = 3, spectral = False):
+    def __init__(self, input_size = 6, hidden_size = 7, output_size = 3, spectral = False):
         super(NeuralNetwork, self).__init__()
         
         self.input_size = input_size
@@ -137,7 +137,7 @@ class NeuralNetwork(nn.Module):
 
         self.double()
         epoche = 50
-        optimizer = torch.optim.Adam(self.parameters(), lr = 0.003)
+        optimizer = torch.optim.Adam(self.parameters(), lr =0.0025)
 
         loss_fn = nn.MSELoss()
         train_losses = []
