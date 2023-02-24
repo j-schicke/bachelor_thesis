@@ -1,5 +1,17 @@
 Meetings:
 
+17.02-23.02:
+- decision tree:
+    - plot error plot
+    - input f and tau
+    - plot output
+
+- supervised learning:
+    - try differnt things to get f (supervised learning/f with different input)
+    - change different things to get f (supervised learning/f with gyro and vel)
+
+- continue to write the thesis
+
 10.02-16.02:
 
 progress:
