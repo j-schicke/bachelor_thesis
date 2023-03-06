@@ -5,6 +5,8 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch_ros.actions import Node
 from launch.conditions import LaunchConfigurationEquals
+from launch.conditions import LaunchConfigurationNotEquals
+from launch.actions import TimerAction
 
 
 def generate_launch_description():
@@ -53,13 +55,17 @@ def generate_launch_description():
 
     return LaunchDescription([
         DeclareLaunchArgument('backend', default_value='cpp'),
-        Node(
-            package='motion_capture_tracking',
-            executable='motion_capture_tracking_node',
-            name='motion_capture_tracking',
-            # output='screen',
-            parameters=[motion_capture_params]
-        ),
+        TimerAction(period=3.0,
+            actions=[
+                Node(
+                    package='motion_capture_tracking',
+                    executable='motion_capture_tracking_node',
+                    condition=LaunchConfigurationNotEquals('backend','sim'),
+                    name='motion_capture_tracking',
+                    output='screen',
+                    parameters=[motion_capture_params]
+                ),
+        ]),
         Node(
             package='crazyflie',
             executable='teleop',
@@ -107,15 +113,10 @@ def generate_launch_description():
             }]
         ),
         Node(
-            package='jana_ros',
-            executable='teleop',
-            name='teleop_coltrans'
+            package='rviz2',
+            namespace='',
+            executable='rviz2',
+            name='rviz2',
+            arguments=['-d' + os.path.join(get_package_share_directory('crazyflie'), 'config', 'config.rviz')],
         ),
-        # Node(
-        #     package='rviz2',
-        #     namespace='',
-        #     executable='rviz2',
-        #     name='rviz2',
-        #     arguments=['-d' + rviz_config]
-        # ),
     ])

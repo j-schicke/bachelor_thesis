@@ -52,5 +52,13 @@ all:
       extPosStdDev: 1e-3
       extQuatStdDev: 0.5e0 #0.5e0 #0.5e-1
 
+    # start motors for IR detection
+    motorPowerSet:
+      m1: 10000
+      m2: 10000
+      m3: 10000
+      m4: 10000
+      enable: 1
+
   firmware_logging:
     enabled: false

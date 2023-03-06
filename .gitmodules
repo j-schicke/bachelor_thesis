@@ -1,0 +1,3 @@
+[submodule "hardware/crazyflie-firmware"]
+	path = hardware/crazyflie-firmware
+	url = git@github.com:IMRCLab/crazyflie-firmware.git

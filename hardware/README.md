@@ -17,6 +17,13 @@ ros2 launch jana_ros launch.py
 ros2 run jana_ros traj
 ```
 
+or
+
+```
+ros2 launch jana_ros launch.py
+ros2 run jana_ros random_flight
+```
+
 ## Data
 
 ### jana00
