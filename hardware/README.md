@@ -89,3 +89,124 @@ TIMESCALE = 3.0
 CONTROLLER = 1
 FILE = "circle0.csv"
 
+### jana20
+
+```
+CONTROLLER = 2
+MODE = "fw"
+SPEED = [0.1, 0.5]
+DLIMITS = [1.0, 1.0]
+BBOX = [[-0.5,-0.5,0.1],
+        [0.5,0.5,1.0]]
+DURATION = 10
+```
+
+### jana23
+
+```
+CONTROLLER = 2
+MODE = "fw"
+SPEED = [0.1, 1.0]
+DLIMITS = [1.0, 1.0]
+BBOX = [[-0.5,-0.5,0.1],
+        [0.5,0.5,1.0]]
+DURATION = 10
+```
+
+### jana24
+
+```
+CONTROLLER = 1
+MODE = "fw"
+SPEED = [0.1, 1.0]
+DLIMITS = [1.0, 1.0]
+BBOX = [[-0.5,-0.5,0.1],
+        [0.5,0.5,1.0]]
+DURATION = 10
+```
+
+### jana25
+
+```
+CONTROLLER = 6
+MODE = "fw"
+SPEED = [0.1, 1.0]
+DLIMITS = [1.0, 1.0]
+BBOX = [[-0.5,-0.5,0.1],
+        [0.5,0.5,1.0]]
+DURATION = 10
+```
+
+### jana27
+
+```
+CONTROLLER = 2
+MODE = "fw"
+SPEED = [0.5, 1.0]
+DLIMITS = [1.0, 1.0]
+BBOX = [[-0.5,-0.5,0.1],
+        [0.5,0.5,1.0]]
+DURATION = 10
+```
+
+### jana28
+
+```
+CONTROLLER = 2
+MODE = "fw"
+SPEED = [0.5, 1.0]
+DLIMITS = [1.0, 1.0]
+BBOX = [[-0.5,-0.5,0.1],
+        [0.5,0.5,1.0]]
+DURATION = 10
+```
+
+### jana29
+
+```
+CONTROLLER = 6
+MODE = "fw"
+SPEED = [0.5, 1.0]
+DLIMITS = [1.0, 1.0]
+BBOX = [[-0.5,-0.5,0.1],
+        [0.5,0.5,1.0]]
+DURATION = 10
+```
+
+### jana30
+
+```
+CONTROLLER = 1
+MODE = "fw"
+SPEED = [1.0, 1.5]
+DLIMITS = [1.0, 1.0]
+BBOX = [[-0.5,-0.5,0.1],
+        [0.5,0.5,1.0]]
+DURATION = 10
+```
+
+### jana32
+
+```
+CONTROLLER = 2
+MODE = "fw"
+SPEED = [1.0, 1.5]
+DLIMITS = [1.0, 1.0]
+BBOX = [[-0.5,-0.5,0.1],
+        [0.5,0.5,1.0]]
+DURATION = 10
+```
+
+### jana33
+
+```
+CONTROLLER = 6
+MODE = "fw"
+SPEED = [1.0, 1.5]
+DLIMITS = [1.0, 1.0]
+BBOX = [[-0.5,-0.5,0.1],
+        [0.5,0.5,1.0]]
+DURATION = 10
+```
+
+

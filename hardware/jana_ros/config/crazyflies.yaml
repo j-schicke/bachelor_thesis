@@ -25,7 +25,7 @@ all:
       enHighLevel: 1
     stabilizer:
       estimator: 2 # 1: complementary, 2: kalman
-      controller: 6 # 1: PID, 2: mellinger 4: sjc 6: Lee 7: lee payload
+      controller: 1 # 1: PID, 2: mellinger 4: sjc 6: Lee 7: lee payload
       pAlpha: 0.9
     ctrlLee:
       Kpos_Px: 9.0 # def: 10.0
