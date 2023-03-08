@@ -1,41 +1,31 @@
 import torch
 from torch import nn
-from torch.nn.utils.parametrizations import spectral_norm
 import numpy as np
-from sklearn.model_selection import train_test_split
-from plot_data import losses, plot_test_data_f, plot_test_data_tau
+from plot_data import losses
 from basis_forward_propagation import decode_data
 from config.multirotor_config import MultirotorConfig
 from residual_calculation import residual
 from sklearn.preprocessing import MinMaxScaler
 import rowan
 from sklearn.utils import shuffle
-from sklearn.model_selection import KFold
-import pandas as pd
 
 d2r = MultirotorConfig.deg2rad
 g = MultirotorConfig.GRAVITATION
 
 
 class NeuralNetwork(nn.Module):
-    def __init__(self, input_size = 6, hidden_size = 7, output_size = 3, spectral = False):
+    def __init__(self, input_size = 6, hidden_size = 12, output_size = 3):
         super(NeuralNetwork, self).__init__()
         
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.output_size = output_size
-        if spectral:
-            self.linear_relu = nn.Sequential(
-                spectral_norm(nn.Linear(self.input_size, self.hidden_size), n_power_iterations = 2),
-                nn.ReLU(),
-                spectral_norm(nn.Linear(self.hidden_size, self.output_size),n_power_iterations = 2)
-            )
-        else:
-            self.linear_relu = nn.Sequential(
-                nn.Linear(self.input_size, self.hidden_size),
-                nn.ReLU(),
-                nn.Linear(self.hidden_size, self.output_size)
-            )
+
+        self.linear_relu = nn.Sequential(
+            nn.Linear(self.input_size, self.hidden_size),
+            nn.Sigmoid(),
+            nn.Linear(self.hidden_size, self.output_size)
+        )
 
 
     def forward(self, x):
@@ -87,22 +77,23 @@ class NeuralNetwork(nn.Module):
 
 
     def train_model(self):
+        minmax_scaler = MinMaxScaler(feature_range=(-1,1))
+
         X = np.array([])
         y = np.array([])
 
-        for i in ['00', '01', '02', '03', '04', '05', '06', '10','11']:
-
-
+        # for i in ['00', '01', '02', '03', '04','05', '06', '10', '11', '20', '23', '24', '25', '27', '28', '29', '30', '32', '33']:
+        for i in ['00', '01', '02', '03', '04','05', '06', '10', '11']:
 
             data = decode_data(f"hardware/data/jana{i}")
-
+  
             k = np.array([data['stateEstimate.vx'][1:], data['stateEstimate.vy'][1:], data['stateEstimate.vz'][1:], data['gyro.x'][1:]*d2r, data['gyro.y'][1:]*d2r,data['gyro.z'][1:]*d2r ])
 
             if i == '02':
                 X_test = k.T
                 name = f"jana{i}"
                 f_a, tau_a, = residual(data, name)
-                tmp = np.append(f_a, tau_a, axis=1)
+                # tmp = np.append(f_a, tau_a, axis=1)
                 y_test = f_a
                 test_timestamp = data['timestamp'][1:]
             
@@ -114,16 +105,20 @@ class NeuralNetwork(nn.Module):
 
                 name = f"jana{i}"
                 f_a, tau_a, = residual(data, name)
-                #tmp = np.append(f_a, tau_a, axis=1)
+                # tmp = np.append(f_a, tau_a, axis=1)
                 if len(y) == 0:
                     y = f_a
                 else: 
                     y = np.append(y, f_a, axis=0)
 
 
-
-
         X, y = shuffle(X, y)
+        # y_full = np.append(y_train, y_test, axis = 0)
+        # y_scaled = minmax_scaler.fit_transform(y_full)
+        # y_train = y_scaled[:len(y_train),:]
+        # y_test = y_scaled[len(y_train):,:]
+
+
         X_test = torch.from_numpy(X_test)
         y_test = torch.from_numpy(np.array(y_test))
 
@@ -136,8 +131,8 @@ class NeuralNetwork(nn.Module):
 
 
         self.double()
-        epoche = 50
-        optimizer = torch.optim.Adam(self.parameters(), lr =0.0025)
+        epoche = 70
+        optimizer = torch.optim.Adam(self.parameters(), lr =0.0005)
 
         loss_fn = nn.MSELoss()
         train_losses = []

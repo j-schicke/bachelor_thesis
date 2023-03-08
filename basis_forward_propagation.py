@@ -45,13 +45,11 @@ def acceleration(u, z_w, z_b):
     acc = (-m*g*z_w+u[0]*z_b)/m 
     return acc + np.array([0,0,g])
     
-def velocity(acc, vel, time, prev_time):
-    dt = (time - prev_time)* ms2s
+def velocity(acc, vel, dt):
     v = vel + acc*dt
     return v
     
-def position(vel, pos, time, prev_time):
-    dt = (time - prev_time)*ms2s
+def position(vel, pos, dt):
     y = pos + vel*dt
     return y
 
@@ -59,13 +57,11 @@ def angular_acc(u, wbw):
     wbw_2 = np.linalg.pinv(I)@(np.cross(-wbw,I)@wbw+np.array([u[1], u[2], u[3]]))
     return wbw_2
 
-def angular_velocity(acc_a, vel_a, time, prev_time):
-    dt = (time - prev_time)*ms2s
+def angular_velocity(acc_a, vel_a, dt):
     v = vel_a + acc_a*dt
     return v
 
-def new_quaternion(v, q, time, prev_time):
-    dt = (time - prev_time)*ms2s
+def new_quaternion(v, q, dt):
     quaternion = rowan.calculus.integrate(q, v, dt)
     return quaternion
 
@@ -104,6 +100,7 @@ def propagate(data,name):
         u = thrust_torque(pwm_1[i], pwm_2[i], pwm_3[i], pwm_4[i], mv[i])
 
         time = data['timestamp'][i+1]
+        dt = (time - prev_time)*ms2s
 
         ang_a = angular_acc(u, np.array([data['gyro.x'][i], data['gyro.y'][i], data['gyro.z'][i]])*d2r)
         acc_a.append(ang_a)
@@ -113,22 +110,22 @@ def propagate(data,name):
         err_a = np.array([data['acc.x'][i+1], data['acc.y'][i+1], data['acc.z'][i+1]]) -a*ms2g
         err_acc.append(err_a)
 
-        v = velocity(acc[i], np.array([data['stateEstimate.vx'][i], data['stateEstimate.vy'][i], data['stateEstimate.vz'][i]]), time, prev_time)
+        v = velocity(acc[i], np.array([data['stateEstimate.vx'][i], data['stateEstimate.vy'][i], data['stateEstimate.vz'][i]]), dt)
         vel.append(v)
         err_v = np.array([data['stateEstimate.vx'][i+1], data['stateEstimate.vy'][i+1], data['stateEstimate.vz'][i+1]]) -v
         err_vel.append(err_v)
 
-        y = position(vel[i],  np.array([data['stateEstimate.x'][i], data['stateEstimate.y'][i], data['stateEstimate.z'][i]]), time, prev_time)
+        y = position(vel[i],  np.array([data['stateEstimate.x'][i], data['stateEstimate.y'][i], data['stateEstimate.z'][i]]), dt)
         pos.append(y)
         err_y = np.array([data['stateEstimate.x'][i+1], data['stateEstimate.y'][i+1], data['stateEstimate.z'][i+1]]) -y
         err_pos.append(err_y)
 
-        v_a = angular_velocity(acc_a[i],  np.array([data['gyro.x'][i], data['gyro.y'][i], data['gyro.z'][i]])*d2r  ,time, prev_time)
+        v_a = angular_velocity(acc_a[i],  np.array([data['gyro.x'][i], data['gyro.y'][i], data['gyro.z'][i]])*d2r  ,dt)
         vel_a.append(v_a)
         err_v_a = np.array([data['gyro.x'][i+1], data['gyro.y'][i+1], data['gyro.z'][i+1]])*d2r - v_a
         err_vel_a.append(err_v_a)
 
-        quat = new_quaternion(vel_a[i], np.array([data['stateEstimate.qw'][i],data['stateEstimate.qx'][i], data['stateEstimate.qy'][i], data['stateEstimate.qz'][i]]), time, prev_time)
+        quat = new_quaternion(vel_a[i], np.array([data['stateEstimate.qw'][i],data['stateEstimate.qx'][i], data['stateEstimate.qy'][i], data['stateEstimate.qz'][i]]), dt)
         quaternions.append(quat)
 
         err_quat = rowan.multiply(np.array([data['stateEstimate.qw'][i+1],data['stateEstimate.qx'][i+1], data['stateEstimate.qy'][i+1], data['stateEstimate.qz'][i+1]]), rowan.inverse(quat))
@@ -155,8 +152,15 @@ def propagate(data,name):
     trajectory(data, name)
 
 if __name__ == "__main__":
+    l = 0
+    compl = 0
+    #for i in ['00', '01', '02', '03', '04','05', '06', '10', '11', '20', '23', '24', '25', '27', '28', '29', '30', '32', '33']:
     for i in ['00', '01', '02', '03', '04','05', '06', '10', '11']:
+
         path = f'hardware/data/jana{i}'
         data = decode_data(path)
         name = f'jana{i}'
         propagate(data, name)
+        l = len(data['timestamp'])
+        compl += l
+    print(compl)

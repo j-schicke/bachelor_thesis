@@ -65,7 +65,7 @@ def residual(data, name):
     f = np.array(f)
     tau = np.array(tau)
 
-    #f_a_plot(data, f, name)
-    #tau_a_plot(data, tau, name)
+    # f_a_plot(data, f, name)
+    # tau_a_plot(data, tau, name)
 
     return f, tau

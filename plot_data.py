@@ -57,7 +57,7 @@ def compare_gyro(data, vel_a, name):
     
     plt.tight_layout()
 
-    plt.savefig(f'pdf/{name}/angular_velocity.pdf', bbox_inches='tight')  
+    plt.savefig(f'pdf/{name}/angular_velocity.png', bbox_inches='tight')  
 
 def compare_position(data, pos, name):
 
@@ -88,7 +88,7 @@ def compare_position(data, pos, name):
     plt.tight_layout()
 
 
-    plt.savefig(f'pdf/{name}/position.pdf', bbox_inches='tight')  
+    plt.savefig(f'pdf/{name}/position.png', bbox_inches='tight')  
 
 
 def trajectory_x_y_plane(data, name):
@@ -107,7 +107,7 @@ def trajectory_x_y_plane(data, name):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/{name}/trajectory_x_y_plane.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/{name}/trajectory_x_y_plane.png', bbox_inches='tight')
 
 def trajectory(data, name):
     fig = plt.figure()
@@ -125,7 +125,7 @@ def trajectory(data, name):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/{name}/trajectory.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/{name}/trajectory.png', bbox_inches='tight')
 
 
 def compare_velocity(data, vel, name):
@@ -155,7 +155,7 @@ def compare_velocity(data, vel, name):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/{name}/velocity.pdf', bbox_inches='tight')  
+    plt.savefig(f'pdf/{name}/velocity.png', bbox_inches='tight')  
 
 
 def rpm(data):
@@ -206,7 +206,7 @@ def compare_quaternions(data, quaternions, name):
     plt.tight_layout()
 
 
-    plt.savefig(f'pdf/{name}/quaternions.pdf', bbox_inches='tight')  
+    plt.savefig(f'pdf/{name}/quaternions.png', bbox_inches='tight')  
 
 
 
@@ -240,7 +240,7 @@ def compare_acceleration(data, acc, name):
     plt.tight_layout()
 
 
-    plt.savefig(f'pdf/{name}/acceleration.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/{name}/acceleration.png', bbox_inches='tight')
 
 
 def error_acceleration(data, err_acc, name):
@@ -255,7 +255,7 @@ def error_acceleration(data, err_acc, name):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/{name}/error/error_acceleration.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/{name}/error/error_acceleration.png', bbox_inches='tight')
 
 def error_velocity(data, err_vel, name):
     fig, ax = plt.subplots()
@@ -266,7 +266,7 @@ def error_velocity(data, err_vel, name):
     ax.set_ylabel('velocity [m/s]')
     ax.set_title('error velocity')
     ax.legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
-    plt.savefig(f'pdf/{name}/error/error_velocity.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/{name}/error/error_velocity.png', bbox_inches='tight')
 
     plt.tight_layout()
 
@@ -283,7 +283,7 @@ def error_angular_velocity(data, err_vel_a, name):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/{name}/error/error_angular_velocity.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/{name}/error/error_angular_velocity.png', bbox_inches='tight')
 
 def error_quaternions(data, err_quat, name):
 
@@ -300,7 +300,7 @@ def error_quaternions(data, err_quat, name):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/{name}/error/error_quaternions.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/{name}/error/error_quaternions.png', bbox_inches='tight')
 
 def error_position(data, err_pos, name):
     fig, ax = plt.subplots()
@@ -314,7 +314,7 @@ def error_position(data, err_pos, name):
 
     plt.tight_layout()
     
-    plt.savefig(f'pdf/{name}/error/error_position.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/{name}/error/error_position.png', bbox_inches='tight')
 
 
 def f_a_plot(data, f, name):
@@ -348,7 +348,7 @@ def f_a_plot(data, f, name):
     plt.tight_layout()
 
 
-    plt.savefig(f'pdf/{name}/f_a.pdf',bbox_inches='tight')
+    plt.savefig(f'pdf/{name}/f_a.png',bbox_inches='tight')
 
 def tau_a_plot(data, tau, name):
     #fig, ax = plt.subplots()
@@ -380,7 +380,7 @@ def tau_a_plot(data, tau, name):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/{name}/tau_a.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/{name}/tau_a.png', bbox_inches='tight')
 
 def errors(data, err_acc, err_vel, err_pos, err_vel_a, err_quaternions, name):
 
@@ -427,7 +427,7 @@ def plot_test_data_f(f, pred, test_timestamp):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/Supervised learning/predictited f.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/Supervised learning/predictited f.png', bbox_inches='tight')
 
 def plot_test_data_tau(tau, pred, test_timestamp):
     tau = np.array(tau)
@@ -455,7 +455,7 @@ def plot_test_data_tau(tau, pred, test_timestamp):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/Supervised learning/predicted tau.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/Supervised learning/predicted tau.png', bbox_inches='tight')
 
 
 def losses(train_losses, test_losses):
@@ -471,7 +471,7 @@ def losses(train_losses, test_losses):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/Supervised learning/losses.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/Supervised learning/losses.png', bbox_inches='tight')
 
 
 
@@ -502,7 +502,7 @@ def plot_test_pred_f(f, pred, test_timestamp):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/Decision Tree/predictited f.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/Decision Tree/predictited f.png', bbox_inches='tight')
 
 def plot_test_pred_tau(tau, pred, test_timestamp):
     t = test_timestamp
@@ -531,7 +531,7 @@ def plot_test_pred_tau(tau, pred, test_timestamp):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/Decision Tree/predicted tau.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/Decision Tree/predicted tau.png', bbox_inches='tight')
 
 def tree_losses(results):
 
@@ -544,19 +544,18 @@ def tree_losses(results):
     plt.title('Decision Tree Loss')
 
     plt.legend()
-    plt.savefig('pdf/Decision Tree/Decision Tree Loss.pdf')
+    plt.savefig('pdf/Decision Tree/Decision Tree Loss.png')
 
 def tree_error_f(f, pred, test_timestamp):
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(3)
     error_f = f-pred[:,:3]
 
-    ax.plot(test_timestamp, error_f[:, 0], '-', label='calculated', alpha=0.7)
-    ax.plot(test_timestamp, error_f[:, 1], '-', label='predicted', alpha=0.7)    
-    ax.plot(test_timestamp, error_f[:, 2], '-', label='predicted', alpha=0.7)
+    ax[0].plot(test_timestamp, error_f[:, 0], '-')
+    ax[1].plot(test_timestamp, error_f[:, 1], '-')    
+    ax[2].plot(test_timestamp, error_f[:, 2], '-')
     ax.set_xlabel('timestamp')
     ax.set_ylabel('error')
     ax.set_title('Disturbance Forces Error')
-    ax.legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
 
     # ax[1].plot(test_timestamp, f[:, 1], '-', label='calculated', alpha=0.7)
     # ax[1].plot(test_timestamp, pred[:, 1], '-', label='predicted', alpha=0.7)
@@ -575,20 +574,19 @@ def tree_error_f(f, pred, test_timestamp):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/Decision Tree/predictited f absolut error.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/Decision Tree/predictited f absolut error.png', bbox_inches='tight')
 
 
 def tree_error_tau(tau, pred, test_timestamp):
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(3)
     error_tau = tau-pred[:,3:]
 
-    ax.plot(test_timestamp, error_tau[:, 0], '-', label='calculated', alpha=0.7)
-    ax.plot(test_timestamp, error_tau[:, 1], '-', label='predicted', alpha=0.7)    
-    ax.plot(test_timestamp, error_tau[:, 2], '-', label='predicted', alpha=0.7)
+    ax[0].plot(test_timestamp, error_tau[:, 0], '-')
+    ax[1].plot(test_timestamp, error_tau[:, 1], '-')    
+    ax[2].plot(test_timestamp, error_tau[:, 2], '-')
     ax.set_xlabel('timestamp')
     ax.set_ylabel('error')
     ax.set_title('Disturbance Torques Error')
-    ax.legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
 
     # ax[1].plot(test_timestamp, f[:, 1], '-', label='calculated', alpha=0.7)
     # ax[1].plot(test_timestamp, pred[:, 1], '-', label='predicted', alpha=0.7)
@@ -607,6 +605,6 @@ def tree_error_tau(tau, pred, test_timestamp):
 
     plt.tight_layout()
 
-    plt.savefig(f'pdf/Decision Tree/predictited tau absolut error.pdf', bbox_inches='tight')
+    plt.savefig(f'pdf/Decision Tree/predictited tau absolut error.png', bbox_inches='tight')
 
 

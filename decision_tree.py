@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from plot_data import plot_test_pred_f, plot_test_pred_tau, tree_losses, tree_error_f, tree_error_tau
 import pandas as pd 
 from sklearn.preprocessing import MinMaxScaler
+from time import perf_counter
 
 
 d2r = MultirotorConfig.deg2rad
@@ -34,7 +35,7 @@ def train_tree():
     X_train = np.array([])
     y_train = np.array([])
     minmax_scaler = MinMaxScaler(feature_range=(-1,1))
-    for i in ['00', '01', '02', '03', '04', '05', '06', '10','11']:
+    for i in ['00', '01', '02', '03', '04','05', '06', '10', '11', '20', '23', '24', '25', '27', '28', '29', '30', '32', '33']:
         if i == '02':
             data = decode_data(f"hardware/data/jana{i}")
             X_test = np.array([data['stateEstimate.vx'][1:], data['stateEstimate.vy'][1:], data['stateEstimate.vz'][1:], data['gyro.x'][1:]*d2r, data['gyro.y'][1:]*d2r,data['gyro.z'][1:]*d2r])
@@ -81,9 +82,17 @@ def train_tree():
     tree_losses(results)
 
     xg.plot_importance(model)
-    plt.savefig('pdf/Decision Tree/features.pdf')
+    plt.savefig('pdf/Decision Tree/features.png')
 
     model.save_model('tree.json')
+    # xg.plot_tree(model)
+    # plt.show()
+
     test_tree(X_test,y_test, model, test_timestamp)
 
+start = perf_counter()
+
 train_tree()
+
+end = perf_counter()
+print(end - start)
