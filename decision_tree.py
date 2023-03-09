@@ -13,6 +13,7 @@ from plot_data import plot_test_pred_f, plot_test_pred_tau, tree_losses, tree_er
 import pandas as pd 
 from sklearn.preprocessing import MinMaxScaler
 from time import perf_counter
+import torch
 
 
 d2r = MultirotorConfig.deg2rad
@@ -65,10 +66,17 @@ def train_tree():
     X_train = pd.DataFrame(X_train, columns = ['Vel X','Vel Y','Vel Z', 'Gyr X', 'Gyr Y', 'Gyr Z'])
     X_test = pd.DataFrame(X_test.T, columns=['Vel X','Vel Y','Vel Z', 'Gyr X', 'Gyr Y', 'Gyr Z'])
 
-    y_full = np.append(y_train, y_test, axis = 0)
+    # y_full = np.append(y_train, y_test, axis = 0)
+    # y_scaled = minmax_scaler.fit_transform(y_full)
+    # y_train = y_scaled[:len(y_train),:3]
+    # y_test = y_scaled[len(y_train):,:3]
+    y_full = np.append(y_train[:,3:], y_test[:,3:], axis=0)
     y_scaled = minmax_scaler.fit_transform(y_full)
-    y_train = y_scaled[:len(y_train),:]
-    y_test = y_scaled[len(y_train):,:]
+    y_train = np.append(y_train[:, :3], y_scaled[:len(y_train),:], axis = 1)
+    y_test = np.append(y_test[:,:3],y_scaled[len(y_train):,:], axis = 1)
+    y_train = torch.from_numpy(y_train) 
+    y_test = torch.from_numpy(y_test)
+
 
     X_train, y_train = shuffle(X_train, y_train, random_state=3)
 
