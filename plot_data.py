@@ -473,6 +473,56 @@ def losses(train_losses, test_losses):
 
     plt.savefig(f'pdf/Supervised learning/losses.png', bbox_inches='tight')
 
+def model_error_f(f, pred, test_timestamp):
+    fig, ax = plt.subplots(3)
+    error_f = f-pred[:,:3]
+
+    ax[0].plot(test_timestamp, error_f[:, 0], '-')
+    ax[0].set_xlabel('timestamp')
+    ax[0].set_ylabel('error')
+    ax[0].set_title('Disturbance Force X Error')
+
+    ax[1].plot(test_timestamp, error_f[:, 1], '-') 
+    ax[1].set_xlabel('timestamp')
+    ax[1].set_ylabel('error')
+    ax[1].set_title('Disturbance Force X Error')
+   
+    ax[2].plot(test_timestamp, error_f[:, 2], '-')
+    ax[2].set_xlabel('timestamp')
+    ax[2].set_ylabel('error')
+    ax[2].set_title('Disturbance Force X Error')
+
+    plt.tight_layout()
+
+    plt.savefig(f'pdf/Supervised learning/predictited f absolut error.png', bbox_inches='tight')
+
+
+def model_error_tau(tau, pred, test_timestamp):
+    fig, ax = plt.subplots(3)
+    error_tau = tau-pred[:,3:]
+
+    ax[0].plot(test_timestamp, error_tau[:, 0], '-')
+    ax[0].set_xlabel('timestamp')
+    ax[0].set_ylabel('error')
+    ax[0].set_title('Residual Torque X Error')
+
+    ax[1].plot(test_timestamp, error_tau[:, 1], '-') 
+    ax[1].set_xlabel('timestamp')
+    ax[1].set_ylabel('error')
+    ax[1].set_title('Residual Torque Y Error')
+
+    ax[2].plot(test_timestamp, error_tau[:, 2], '-')
+    ax[2].set_xlabel('timestamp')
+    ax[2].set_ylabel('error')
+    ax[2].set_title('Residual Torque Z Error')
+
+    plt.tight_layout()
+
+    plt.savefig(f'pdf/Supervised learning/predictited tau absolut error.png', bbox_inches='tight')
+
+
+
+
 
 
 def plot_test_pred_f(f, pred, test_timestamp):
@@ -551,26 +601,19 @@ def tree_error_f(f, pred, test_timestamp):
     error_f = f-pred[:,:3]
 
     ax[0].plot(test_timestamp, error_f[:, 0], '-')
-    ax[1].plot(test_timestamp, error_f[:, 1], '-')    
+    ax[0].set_xlabel('timestamp')
+    ax[0].set_ylabel('error')
+    ax[0].set_title('Disturbance Force X Error')
+
+    ax[1].plot(test_timestamp, error_f[:, 1], '-') 
+    ax[1].set_xlabel('timestamp')
+    ax[1].set_ylabel('error')
+    ax[1].set_title('Disturbance Force X Error')
+   
     ax[2].plot(test_timestamp, error_f[:, 2], '-')
-    ax.set_xlabel('timestamp')
-    ax.set_ylabel('error')
-    ax.set_title('Disturbance Forces Error')
-
-    # ax[1].plot(test_timestamp, f[:, 1], '-', label='calculated', alpha=0.7)
-    # ax[1].plot(test_timestamp, pred[:, 1], '-', label='predicted', alpha=0.7)
-    # ax[1].set_xlabel('time')
-    # ax[1].set_ylabel('N')
-    # ax[1].set_title('Disturbance Forces Y')
-    # ax[1].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
-
-
-    # ax[2].plot(test_timestamp, f[:,2], '-', label='calculated', alpha=0.7)
-    # ax[2].plot(test_timestamp, pred[:, 2], '-', label='predicted', alpha=0.7)
-    # ax[2].set_xlabel('time')
-    # ax[2].set_ylabel('N')
-    # ax[2].set_title('Disturbance Forces Z')
-    # ax[2].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
+    ax[2].set_xlabel('timestamp')
+    ax[2].set_ylabel('error')
+    ax[2].set_title('Disturbance Force X Error')
 
     plt.tight_layout()
 
@@ -582,26 +625,19 @@ def tree_error_tau(tau, pred, test_timestamp):
     error_tau = tau-pred[:,3:]
 
     ax[0].plot(test_timestamp, error_tau[:, 0], '-')
-    ax[1].plot(test_timestamp, error_tau[:, 1], '-')    
+    ax[0].set_xlabel('timestamp')
+    ax[0].set_ylabel('error')
+    ax[0].set_title('Residual Torque X Error')
+
+    ax[1].plot(test_timestamp, error_tau[:, 1], '-') 
+    ax[1].set_xlabel('timestamp')
+    ax[1].set_ylabel('error')
+    ax[1].set_title('Residual Torque Y Error')
+
     ax[2].plot(test_timestamp, error_tau[:, 2], '-')
-    ax.set_xlabel('timestamp')
-    ax.set_ylabel('error')
-    ax.set_title('Disturbance Torques Error')
-
-    # ax[1].plot(test_timestamp, f[:, 1], '-', label='calculated', alpha=0.7)
-    # ax[1].plot(test_timestamp, pred[:, 1], '-', label='predicted', alpha=0.7)
-    # ax[1].set_xlabel('time')
-    # ax[1].set_ylabel('N')
-    # ax[1].set_title('Disturbance Forces Y')
-    # ax[1].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
-
-
-    # ax[2].plot(test_timestamp, f[:,2], '-', label='calculated', alpha=0.7)
-    # ax[2].plot(test_timestamp, pred[:, 2], '-', label='predicted', alpha=0.7)
-    # ax[2].set_xlabel('time')
-    # ax[2].set_ylabel('N')
-    # ax[2].set_title('Disturbance Forces Z')
-    # ax[2].legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
+    ax[2].set_xlabel('timestamp')
+    ax[2].set_ylabel('error')
+    ax[2].set_title('Residual Torque Z Error')
 
     plt.tight_layout()
 

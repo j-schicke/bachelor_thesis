@@ -8,13 +8,14 @@ from residual_calculation import residual
 from sklearn.preprocessing import MinMaxScaler
 import rowan
 from sklearn.utils import shuffle
+from torch.utils.data import TensorDataset, DataLoader
 
 d2r = MultirotorConfig.deg2rad
 g = MultirotorConfig.GRAVITATION
 
 
 class NeuralNetwork(nn.Module):
-    def __init__(self, input_size = 6, hidden_size = 12, output_size = 3):
+    def __init__(self, input_size = 6, hidden_size = [24, 24], output_size = 6):
         super(NeuralNetwork, self).__init__()
         
         self.input_size = input_size
@@ -22,9 +23,11 @@ class NeuralNetwork(nn.Module):
         self.output_size = output_size
 
         self.linear_relu = nn.Sequential(
-            nn.Linear(self.input_size, self.hidden_size),
-            nn.Sigmoid(),
-            nn.Linear(self.hidden_size, self.output_size)
+            nn.Linear(self.input_size, self.hidden_size[0]),
+            nn.ReLU(),
+            nn.Linear(self.hidden_size[0], self.hidden_size[1]),
+            nn.ReLU(),
+            nn.Linear(self.hidden_size[1], self.output_size)
         )
 
 
@@ -32,48 +35,44 @@ class NeuralNetwork(nn.Module):
         pred = self.linear_relu(x)
         return pred
 
-    def train_loop(self, X, y ,loss_fn, optimizer):
+    def train_loop(self, dataloader ,loss_fn, optimizer):
         self.train()
         train_loss = []
-        for i in range(len(y)):
-            
-            optimizer.zero_grad()
-            pred = self.forward(X[:,i]) 
-            #loss_1 = loss_fn(pred[:3], y[:3,i])
-            #loss_2 = loss_fn(pred[3:], y[3:,i])
-            loss = loss_fn(pred, y[:,i] )
-            #loss = loss_1 + 10*loss_2
+        size = len(dataloader.dataset)
+        for batch, (X, y) in enumerate(dataloader):
+            pred = self.forward(X)
+            loss = loss_fn(pred, y)
 
+
+            optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            loss = loss.item()
-            train_loss.append(loss)
-        avg_train = np.array(train_loss).sum()/len(y)
+
+            if batch % 100 == 0:
+                loss = loss.item()
+                train_loss.append(loss)
+                print(f"loss: {loss:>7f}")
+
+        avg_train = np.array(train_loss).sum()/size
 
         print(f'avg. train loss: {avg_train :> 5f}')
         return avg_train
 
-    def test_loop(self, X, y, loss_fn):
-        self.eval()
+    def test_loop(self, dataloader, loss_fn):
         test_losses = []
-        pred_arr = []
+        size = len(dataloader.dataset)
+        num_batches = len(dataloader)
+        test_loss = 0
 
         with torch.no_grad():
+            for X, y in dataloader:
+                pred = self.forward(X)
+                test_loss += loss_fn(pred, y).item()
 
-            for i in range(len(y)):
+        test_loss /= num_batches
 
-                pred = self.forward(X[i])
-                pred_arr.append(pred.cpu().detach().numpy())
-                test_loss = loss_fn(pred, y[i])
-                #test_loss_1 = loss_fn(pred[:3], y[i,:3 ])
-                #test_loss_2 = loss_fn(pred[3:], y[i, 3:])
-                #test_loss = test_loss_1 + 10*test_loss_2
-
-                test_losses.append(test_loss.item())
-                
-        avg_test = np.array(test_losses).sum()/len(y) 
-        print(f'avg. test loss: {avg_test :> 5f}')
-        return avg_test
+        print(f"Avg loss: {test_loss:>8f} \n")
+        return test_loss
 
 
     def train_model(self):
@@ -82,49 +81,55 @@ class NeuralNetwork(nn.Module):
         X = np.array([])
         y = np.array([])
 
-        # for i in ['00', '01', '02', '03', '04','05', '06', '10', '11', '20', '23', '24', '25', '27', '28', '29', '30', '32', '33']:
         for i in ['00', '01', '02', '03', '04','05', '06', '10', '11', '20', '23', '24', '25', '27', '28', '29', '30', '32', '33']:
+        # for i in ['00', '01', '02']:
 
 
             data = decode_data(f"hardware/data/jana{i}")
   
-            k = np.array([data['stateEstimate.vx'][1:], data['stateEstimate.vy'][1:], data['stateEstimate.vz'][1:], data['gyro.x'][1:]*d2r, data['gyro.y'][1:]*d2r,data['gyro.z'][1:]*d2r ])
+            k = np.array([data['stateEstimate.vx'][1:], data['stateEstimate.vy'][1:], data['stateEstimate.vz'][1:], data['gyro.x'][1:]*d2r, data['gyro.y'][1:]*d2r,data['gyro.z'][1:]*d2r ]).T
 
             if i == '02':
-                X_test = k.T
+                X_test = k
                 name = f"jana{i}"
                 f_a, tau_a, = residual(data, name)
-                # tmp = np.append(f_a, tau_a, axis=1)
-                y_test = f_a
+                tmp = np.append(f_a, tau_a, axis=1)
+                y_test = tmp
                 test_timestamp = data['timestamp'][1:]
             
             else:
                 if len(X) == 0:
-                    X = k.T
+                    X = k
                 else:
-                    X = np.append(X, k.T, axis=0)
+                    X = np.append(X, k, axis=0)
 
                 name = f"jana{i}"
                 f_a, tau_a, = residual(data, name)
-                # tmp = np.append(f_a, tau_a, axis=1)
+                tmp = np.append(f_a, tau_a, axis=1)
                 if len(y) == 0:
-                    y = f_a
+                    y = tmp
                 else: 
-                    y = np.append(y, f_a, axis=0)
+                    y = np.append(y, tmp, axis=0)
 
 
-        X, y = shuffle(X, y)
-        # y_full = np.append(y_train, y_test, axis = 0)
-        # y_scaled = minmax_scaler.fit_transform(y_full)
-        # y_train = y_scaled[:len(y_train),:]
-        # y_test = y_scaled[len(y_train):,:]
+        X, y_train = shuffle(X, y)
+        y_full = np.append(y_train, y_test, axis = 0)
+        y_scaled = minmax_scaler.fit_transform(y_full)
+        y_train = y_scaled[:len(y_train),:]
+        y_test = y_scaled[len(y_train):,:]
 
 
         X_test = torch.from_numpy(X_test)
         y_test = torch.from_numpy(np.array(y_test))
 
-        X_train = torch.from_numpy(np.array(X).T)
-        y_train = torch.from_numpy(np.array(y).T)
+        X_train = torch.from_numpy(np.array(X))
+        y_train = torch.from_numpy(np.array(y_train))
+
+        train_dataset = TensorDataset(X_train,y_train)
+        test_dataset = TensorDataset(X_test, y_test)
+
+        train_dataloader = DataLoader(train_dataset, batch_size=64)
+        test_dataloader = DataLoader(test_dataset, batch_size=64)
 
         
 
@@ -132,8 +137,8 @@ class NeuralNetwork(nn.Module):
 
 
         self.double()
-        epoche = 70
-        optimizer = torch.optim.Adam(self.parameters(), lr =0.0005)
+        epoche = 50
+        optimizer = torch.optim.Adam(self.parameters(), lr =0.007)
 
         loss_fn = nn.MSELoss()
         train_losses = []
@@ -144,8 +149,8 @@ class NeuralNetwork(nn.Module):
         for t in range(epoche):
             print(f"Epoch {t+1}\n-------------------------------")
                 
-            train_losses.append(self.train_loop(X_train, y_train, loss_fn, optimizer))
-            test_losses.append(self.test_loop(X_test, y_test, loss_fn))
+            train_losses.append(self.train_loop(train_dataloader, loss_fn, optimizer))
+            test_losses.append(self.test_loop(test_dataloader, loss_fn))
         
             print(f"\n-------------------------------")
 
