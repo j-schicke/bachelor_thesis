@@ -17,6 +17,7 @@ import torch
 
 
 d2r = MultirotorConfig.deg2rad
+g = MultirotorConfig.GRAVITATION
 
 def test_tree(X, y, model, test_timestamp):
     pred = model.predict(X.values)
@@ -24,22 +25,26 @@ def test_tree(X, y, model, test_timestamp):
 
     y = np.array(y)
     pred = np.array(pred)
-    plot_test_pred_f(y[:, :3], pred, test_timestamp)
-    plot_test_pred_tau(y[:, 3:], pred, test_timestamp)
-    tree_error_f(y[:, :3], pred, test_timestamp)
-    tree_error_tau(y[:, 3:], pred, test_timestamp)
+    # plot_test_pred_f(y[:, :3], pred, test_timestamp)
+    # plot_test_pred_tau(y[:, 3:], pred, test_timestamp)
+    # tree_error_f(y[:, :3], pred, test_timestamp)
+    # tree_error_tau(y[:, 3:], pred, test_timestamp)
 
 
 
 
 def train_tree():
+    start = perf_counter()
+
     X_train = np.array([])
     y_train = np.array([])
     minmax_scaler = MinMaxScaler(feature_range=(-1,1))
     for i in ['00', '01', '02', '03', '04','05', '06', '10', '11', '20', '23', '24', '25', '27', '28', '29', '30', '32', '33']:
+
         if i == '02':
             data = decode_data(f"hardware/data/jana{i}")
             X_test = np.array([data['stateEstimate.vx'][1:], data['stateEstimate.vy'][1:], data['stateEstimate.vz'][1:], data['gyro.x'][1:]*d2r, data['gyro.y'][1:]*d2r,data['gyro.z'][1:]*d2r])
+
             name = f"jana{i}"
             f_a,tau_a = residual(data, name)
             y_test = np.append(f_a, tau_a, axis=1)
@@ -49,6 +54,7 @@ def train_tree():
 
             data = decode_data(f"hardware/data/jana{i}")
             k = np.array([data['stateEstimate.vx'][1:], data['stateEstimate.vy'][1:], data['stateEstimate.vz'][1:], data['gyro.x'][1:]*d2r, data['gyro.y'][1:]*d2r,data['gyro.z'][1:]*d2r])
+            
             if len(X_train) == 0:
                 X_train = k.T
             else:
@@ -62,14 +68,10 @@ def train_tree():
             else: 
                 y_train = np.append(y_train, tmp, axis=0)
 
-
     X_train = pd.DataFrame(X_train, columns = ['Vel X','Vel Y','Vel Z', 'Gyr X', 'Gyr Y', 'Gyr Z'])
     X_test = pd.DataFrame(X_test.T, columns=['Vel X','Vel Y','Vel Z', 'Gyr X', 'Gyr Y', 'Gyr Z'])
 
-    # y_full = np.append(y_train, y_test, axis = 0)
-    # y_scaled = minmax_scaler.fit_transform(y_full)
-    # y_train = y_scaled[:len(y_train),:3]
-    # y_test = y_scaled[len(y_train):,:3]
+
     y_full = np.append(y_train[:,3:], y_test[:,3:], axis=0)
     y_scaled = minmax_scaler.fit_transform(y_full)
     y_train = np.append(y_train[:, :3], y_scaled[:len(y_train),:], axis = 1)
@@ -83,24 +85,29 @@ def train_tree():
 
     eval_set = [(X_train, y_train), (X_test, y_test)]
 
-    model = xg.XGBRegressor(n_estimators=100, objective = 'reg:squarederror')
+    model = xg.XGBRegressor(n_estimators=100, objective = 'reg:squarederror'
+                            )
     model.fit(X_train, y_train, eval_set = eval_set)
 
-    results = model.evals_result()
-    tree_losses(results)
+    # results = model.evals_result()
+    # tree_losses(results)
 
-    xg.plot_importance(model)
-    plt.savefig('pdf/Decision Tree/features.png')
+    # xg.plot_importance(model)
+    # plt.savefig('pdf/Decision Tree/features.png')
 
     model.save_model('tree.json')
     # xg.plot_tree(model)
     # plt.show()
+    end = perf_counter()
+    print(f'training:{end - start}')
+    start = perf_counter()
+
 
     test_tree(X_test,y_test, model, test_timestamp)
+    end = perf_counter()
 
-start = perf_counter()
+
+    print(f'testing:{end - start}')
+
 
 train_tree()
-
-end = perf_counter()
-print(end - start)

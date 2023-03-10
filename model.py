@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+
 import numpy as np
 from plot_data import losses
 from basis_forward_propagation import decode_data
@@ -14,7 +15,7 @@ g = MultirotorConfig.GRAVITATION
 
 
 class NeuralNetwork(nn.Module):
-    def __init__(self, input_size = 6, hidden_size = 20, output_size = 6):
+    def __init__(self, input_size = 6, hidden_size =10, output_size = 6):
         super(NeuralNetwork, self).__init__()
         
         self.input_size = input_size
@@ -32,8 +33,6 @@ class NeuralNetwork(nn.Module):
             nn.Linear(self.hidden_size, self.output_size)
 
         )
-
-
     def forward(self, x):
         pred = self.linear_relu(x)
         return pred
@@ -56,7 +55,6 @@ class NeuralNetwork(nn.Module):
                 d+=1
                 loss = loss.item()
                 train_loss.append(loss)
-                print(f"loss: {loss:>7f}")
 
         avg_train = np.array(train_loss).sum()/d
 
@@ -74,7 +72,7 @@ class NeuralNetwork(nn.Module):
 
         test_loss /= num_batches
 
-        print(f"Avg loss: {test_loss:>8f} \n")
+        print(f"Avg. test loss: {test_loss:>8f} \n")
         return test_loss 
 
     def train_model(self):
@@ -84,6 +82,7 @@ class NeuralNetwork(nn.Module):
         y = np.array([])
 
         for i in ['00', '01', '02', '03', '04','05', '06', '10', '11', '20', '23', '24', '25', '27', '28', '29', '30', '32', '33']:
+
 
             data = decode_data(f"hardware/data/jana{i}")
   
@@ -118,18 +117,13 @@ class NeuralNetwork(nn.Module):
         y_train = y_scaled[:len(y_train),:]
         y_test = y_scaled[len(y_train):,:]
 
-        # y_full = np.append(y_train[:,3:], y_test[:,3:], axis=0)
-        # y_scaled = minmax_scaler.fit_transform(y_full)
-        # y_train = np.append(y_train[:, :3], y_scaled[:len(y_train),:], axis = 1)
-        # y_test = np.append(y_test[:,:3],y_scaled[len(y_train):,:], axis = 1)
-        # y_train = torch.from_numpy(y_train) 
-        # y_test = torch.from_numpy(y_test)
 
         X_test = torch.from_numpy(X_test)
-        y_test = torch.from_numpy(np.array(y_test))
+        y_test = torch.from_numpy(np.array(y_test).round(4))
+
 
         X_train = torch.from_numpy(np.array(X))
-        y_train = torch.from_numpy(np.array(y_train))
+        y_train = torch.from_numpy(np.array(y_train).round(4))
 
         train_dataset = TensorDataset(X_train,y_train)
         test_dataset = TensorDataset(X_test, y_test)
@@ -139,7 +133,7 @@ class NeuralNetwork(nn.Module):
 
         self.double()
         epoche = 100
-        optimizer = torch.optim.Adam(self.parameters(), lr =0.014)
+        optimizer = torch.optim.Adam(self.parameters(), lr =0.001)
 
         loss_fn = nn.MSELoss()
         train_losses = []

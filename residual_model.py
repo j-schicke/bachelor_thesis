@@ -10,12 +10,6 @@ from time import perf_counter
 from plot_data import plot_test_data_f, plot_test_data_tau, model_error_f, model_error_tau
     
 if __name__ == '__main__':
-#     for i in ['00', '01', '02', '03', '04','05', '06', '10', '11']:
-#         path = f'hardware/data/jana{i}'
-#         data = decode_data(path)
-#         name = f'jana{i}'
-#         residual(data, name)
-
     start = perf_counter()
 
     model = NeuralNetwork()
