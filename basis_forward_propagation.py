@@ -28,14 +28,16 @@ def thrust_torque(pwm_1, pwm_2, pwm_3, pwm_4, mv):
     f_2 = (11.09-39.08*pwm_2-9.53*mv +20.57*pwm_2**2 + 38.43*pwm_2*mv)*g2N
     f_3 = (11.09-39.08*pwm_3-9.53*mv +20.57*pwm_3**2 + 38.43*pwm_3*mv)*g2N
     f_4 = (11.09-39.08*pwm_4-9.53*mv +20.57*pwm_4**2 + 38.43*pwm_4*mv)*g2N
+    l = MultirotorConfig.DISTANCE_ARM
     arm = MultirotorConfig.ARM
     t2t =MultirotorConfig.t2t
     B0 = np.array([
 			[1, 1, 1, 1],
-			[-arm, -arm, arm, arm],
-			[-arm, arm, arm, -arm],
-			[-t2t, t2t, -t2t, t2t]
+			[ 0, l, 0, -l],
+			[-l, 0, l, 0],
+			[t2t, -t2t, t2t, -t2t]
 			])
+
 
     u = B0 @ np.array([f_1, f_2, f_3, f_4])
     return u 
@@ -146,21 +148,15 @@ def propagate(data,name):
     err_quaternions = np.array(err_quaternions)
 
 
-    compare_data(data, quaternions, acc, vel, vel_a, pos, name )
+    compare_data(data, quaternions, acc, vel, vel_a, pos, name)
     errors(data, err_acc, err_vel, err_pos, err_vel_a, err_quaternions, name)
     trajectory_x_y_plane(data, name)
     trajectory(data, name)
 
 if __name__ == "__main__":
-    l = 0
-    compl = 0
-    #for i in ['00', '01', '02', '03', '04','05', '06', '10', '11', '20', '23', '24', '25', '27', '28', '29', '30', '32', '33']:
-    for i in ['00', '01', '02', '03', '04','05', '06', '10', '11']:
 
+    for i in ['00', '01', '02', '03', '04','05', '06', '10', '11', '20', '23', '24', '25', '27', '28', '29', '30', '32', '33']:
         path = f'hardware/data/jana{i}'
         data = decode_data(path)
         name = f'jana{i}'
         propagate(data, name)
-        l = len(data['timestamp'])
-        compl += l
-    print(compl)

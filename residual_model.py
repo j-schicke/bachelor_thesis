@@ -10,11 +10,11 @@ from time import perf_counter
 from plot_data import plot_test_data_f, plot_test_data_tau, model_error_f, model_error_tau
     
 if __name__ == '__main__':
-    start = perf_counter()
 
     model = NeuralNetwork()
     model.double()
     timestamp, X_test, y_test = model.train_model() 
+    
     pred_arr = []
     for i in range(len(y_test)):
         pred = model.forward(X_test[i])
@@ -22,12 +22,8 @@ if __name__ == '__main__':
     pred_arr = np.array(pred_arr)
     y_test = ( np.array(y_test))
 
+
     plot_test_data_f(y_test[:, :3], pred_arr, timestamp)
     plot_test_data_tau(y_test[:,3:], pred_arr, timestamp)
-    model_error_f(y_test[:, :3], pred_arr, timestamp)
-    model_error_tau(y_test[:, 3:], pred_arr, timestamp)
-
-
-
-    end = perf_counter()
-    print(end - start)
+    model_error_f(y_test, pred_arr, timestamp)
+    model_error_tau(y_test, pred_arr, timestamp)
